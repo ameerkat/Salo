@@ -1,0 +1,14 @@
+C:\Projects\Salo\Salo\Salo\SaloCommon\bin\Debug\SaloCommon.dll
+C:\Projects\Salo\Salo\Salo\SaloCommon\bin\Debug\SaloCommon.pdb
+C:\Projects\Salo\Salo\Salo\SaloCommon\bin\Debug\Newtonsoft.Json.dll
+C:\Projects\Salo\Salo\Salo\SaloCommon\bin\Debug\Newtonsoft.Json.xml
+C:\Projects\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.csprojResolveAssemblyReference.cache
+C:\Projects\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.dll
+C:\Projects\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.pdb
+C:\src\Salo\Salo\Salo\SaloCommon\bin\Debug\SaloCommon.dll
+C:\src\Salo\Salo\Salo\SaloCommon\bin\Debug\SaloCommon.pdb
+C:\src\Salo\Salo\Salo\SaloCommon\bin\Debug\Newtonsoft.Json.dll
+C:\src\Salo\Salo\Salo\SaloCommon\bin\Debug\Newtonsoft.Json.xml
+C:\src\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.csprojResolveAssemblyReference.cache
+C:\src\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.dll
+C:\src\Salo\Salo\Salo\SaloCommon\obj\Debug\SaloCommon.pdb
