@@ -70,6 +70,16 @@ namespace TritonSimulator
             return wentUpALevel;
         }
 
+        private static Dictionary<Player, int> InitializePlayerIntDict(Game g)
+        {
+            var d = new Dictionary<Player, int>();
+            foreach (var player in g.Players)
+            {
+                d.Add(player, 0);
+            }
+            return d;
+        }
+
         /// <summary>
         /// Calculates star stats by playter
         /// </summary>
@@ -77,8 +87,7 @@ namespace TritonSimulator
         /// <returns></returns>
         private static Dictionary<Player, int> CalculateByPlayer(Game game, Func<Star, int> selector)
         {
-            var statByPlayer = new Dictionary<Player, int>();
-            statByPlayer.Initialize(game);
+            var statByPlayer = InitializePlayerIntDict(game);
             foreach (var star in game.Stars)
             {
                 if (star.Owner != null)
@@ -110,6 +119,7 @@ namespace TritonSimulator
             Game game = new Game();
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile("Configuration.ini");
+            LoadSettings(game, data);
             
             // Generate Map
             var players = int.Parse(data[MapSection]["Players"]);
@@ -220,6 +230,7 @@ namespace TritonSimulator
 
                 // Each pass of loop is one tick, loop should sleep to synch ticks
                 game.ElapsedTicks += 1;
+                GameOutput.WriteLine(String.Format("Current Tick {0}", game.ElapsedTicks));
 
                 // Calculate Production
                 // MoneyPerEcon * Total Economy + 75 * Banking
@@ -265,7 +276,7 @@ namespace TritonSimulator
                 {
                     // Take into account warp gates
                     var speedModifier = 1;
-                    if (fleet.OriginStar.WarpGate && fleet.DestinationStar.WarpGate)
+                    if (fleet.InTransit && fleet.OriginStar.WarpGate && fleet.DestinationStar.WarpGate)
                     {
                         speedModifier = game.WarpGateModifier;
                     }
