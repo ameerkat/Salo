@@ -16,6 +16,8 @@ namespace TritonSimulator
         private static Random rnd = new Random();
 
         private const string GameParamsSection = "GameParams";
+        private const string MapSection = "Map";
+
         private static void LoadSettings(Game game, IniData data){
             game.FleetSpeed = int.Parse(data[GameParamsSection]["FleetSpeed"]);
             game.TickRate = int.Parse(data[GameParamsSection]["FleetSpeed"]);
@@ -26,6 +28,12 @@ namespace TritonSimulator
             game.BaseTechRate = int.Parse(data[GameParamsSection]["BaseTechRate"]);
             game.WarpGateModifier = int.Parse(data[GameParamsSection]["WarpGateModifier"]);
             game.DefenderBonus = int.Parse(data[GameParamsSection]["DefenderBonus"]);
+            game.StartingCash = int.Parse(data[GameParamsSection]["StartingCash"]);
+            game.StartingShips = int.Parse(data[GameParamsSection]["StartingShips"]);
+            game.HomeStarEconomy = int.Parse(data[GameParamsSection]["HomeStarEconomy"]);
+            game.HomeStarIndustry = int.Parse(data[GameParamsSection]["HomeStarIndustry"]);
+            game.HomeStarScience = int.Parse(data[GameParamsSection]["HomeStarScience"]);
+            game.StartingFleets = int.Parse(data[GameParamsSection]["StartingFleets"]);
         }
 
         /// <summary>
@@ -79,6 +87,11 @@ namespace TritonSimulator
             return statByPlayer;
         }
 
+        private static string NewStarName(string seed)
+        {
+            return String.Format("Star {0}", seed);
+        }
+
         static void Main(string[] args)
         {
             /*
@@ -97,7 +110,105 @@ namespace TritonSimulator
             Game game = new Game();
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile("Configuration.ini");
-            // Set Defaults
+            
+            // Generate Map
+            var players = int.Parse(data[MapSection]["Players"]);
+            var startingStars = int.Parse(data[MapSection]["StartingStars"]);
+            var starsPerPlayer = int.Parse(data[MapSection]["StarsPerPlayer"]);
+            var map = SaloMapGenerator.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer);
+
+            // Initialize Players
+            game.Players = new List<Player>(players);
+            for (int i = 0; i < players; ++i)
+            {
+                var player = new Player()
+                {
+                    Id = i,
+                    Tech = new Technology(),
+                    CurrentlyResearching = Technology.Technologies.Weapons, // defaults to weapons
+                    NextResearching = Technology.Technologies.Weapons,
+                    Name = String.Format("Player{0}", i),
+                    Cash = game.StartingCash
+                };
+                game.Players.Add(player);
+            }
+
+            // Initialize Stars
+            var global_starcount = 0;
+            var global_fleetcount = 0;
+            game.Stars = new List<Star>(players * starsPerPlayer);
+            game.Fleets = new List<Fleet>(players * game.StartingFleets);
+            foreach (var mapStar in map.stars)
+            {
+                var star = new Star(){
+                    Id = global_starcount,
+                    Owner = game.Players[mapStar.player],
+                    Name = NewStarName(global_starcount.ToString()),
+                    x = mapStar.x,
+                    y = mapStar.y,
+                    Ships = mapStar.isStartingStar ? game.StartingShips : 0,
+                    Economy = mapStar.isHomeStar ? game.HomeStarEconomy : 0,
+                    Industry = mapStar.isHomeStar ? game.HomeStarEconomy : 0,
+                    Science = mapStar.isHomeStar ? game.HomeStarScience : 0,
+                    Resources = mapStar.resources,
+                    WarpGate = false
+                };
+                global_starcount++;
+                game.Stars.Add(star);
+
+                // add a fleet to the homestar
+                if (mapStar.isHomeStar && game.StartingFleets > 0)
+                {
+                    game.Fleets.Add(new Fleet()
+                    {
+                        Id = global_fleetcount,
+                        Name = star.Name + " 1",
+                        OriginStar = null,
+                        DestinationStar = null,
+                        CurrentStar = star,
+                        InTransit = false,
+                        DistanceToDestination = 0,
+                        Ships = 0,
+                        ToProcess = false,
+                        Owner = star.Owner
+                    });
+
+                    global_fleetcount++;
+                }
+            };
+
+            // Initialize Fleets
+            foreach (var player in game.Players)
+            {
+                // add starting fleets
+                for (int i = 1; i < game.StartingFleets; ++i)
+                {
+                    // get all unoccupied stars
+                    var starCandidates = game.Stars.Where(x => x.Owner == player && !game.Fleets.Any(y => y.CurrentStar == x));
+                    // if no more stars are available to put starting fleets on
+                    // note it is possible to have more than 1 fleet per star
+                    // this is just an easy way to avoid putting double fleets on the starting star
+                    if (!starCandidates.Any())
+                        break;
+                    var star = starCandidates.ToList().RandomElement();
+                    game.Fleets.Add(new Fleet()
+                    {
+                        Id = global_fleetcount,
+                        Name = star.Name + " 1",
+                        OriginStar = null,
+                        DestinationStar = null,
+                        CurrentStar = star,
+                        InTransit = false,
+                        DistanceToDestination = 0,
+                        Ships = 0,
+                        ToProcess = false,
+                        Owner = star.Owner
+                    });
+
+                    global_fleetcount++;
+                }
+            }
+
             while (true)
             {
                 // Check win conditions

@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Salo", "Salo\Salo.csproj", "{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TritonSimulator", "TritonSimulator\TritonSimulator.csproj", "{40A6462E-7494-47F8-8CD1-5C8DCA38C048}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloCommon", "SaloCommon\SaloCommon.csproj", "{B50126B5-D2EE-4097-930E-6257C57E9311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloMapGenerator", "SaloMapGenerator\SaloMapGenerator.csproj", "{2FB4EDD2-E67B-4B44-AD8C-DADBABE27839}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloMapGeneratorConsole", "SaloMapGeneratorConsole\SaloMapGeneratorConsole.csproj", "{0E239963-C847-4A83-970D-C4D3C922BEB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5551CB00-32A5-479C-AD57-C41992095BEA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A6462E-7494-47F8-8CD1-5C8DCA38C048}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A6462E-7494-47F8-8CD1-5C8DCA38C048}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A6462E-7494-47F8-8CD1-5C8DCA38C048}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A6462E-7494-47F8-8CD1-5C8DCA38C048}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B50126B5-D2EE-4097-930E-6257C57E9311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B50126B5-D2EE-4097-930E-6257C57E9311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B50126B5-D2EE-4097-930E-6257C57E9311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B50126B5-D2EE-4097-930E-6257C57E9311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FB4EDD2-E67B-4B44-AD8C-DADBABE27839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FB4EDD2-E67B-4B44-AD8C-DADBABE27839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FB4EDD2-E67B-4B44-AD8C-DADBABE27839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FB4EDD2-E67B-4B44-AD8C-DADBABE27839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -16,5 +16,11 @@ namespace TritonSimulator
                 d.Add(player, 0);
             }
         }
+
+        public static Random rnd = new Random();
+        public static T RandomElement<T>(this List<T> l)
+        {
+            return l[rnd.Next(0, l.Count)];
+        }
     }
 }

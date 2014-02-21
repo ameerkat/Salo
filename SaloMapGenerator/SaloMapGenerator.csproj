@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Salo\SaloCommon\SaloCommon.csproj">
+    <ProjectReference Include="..\SaloCommon\SaloCommon.csproj">
       <Project>{b50126b5-d2ee-4097-930e-6257c57e9311}</Project>
       <Name>SaloCommon</Name>
     </ProjectReference>

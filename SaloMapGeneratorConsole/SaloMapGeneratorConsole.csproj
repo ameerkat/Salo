@@ -4,15 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{40A6462E-7494-47F8-8CD1-5C8DCA38C048}</ProjectGuid>
+    <ProjectGuid>{0E239963-C847-4A83-970D-C4D3C922BEB9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TritonSimulator</RootNamespace>
-    <AssemblyName>TritonSimulator</AssemblyName>
+    <RootNamespace>SaloMapGeneratorConsole</RootNamespace>
+    <AssemblyName>SaloMapGeneratorConsole</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\Salo\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,11 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="INIFileParser">
-      <HintPath>..\packages\ini-parser.2.0.2\lib\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,29 +43,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Configuration.ini">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="MapDisplay.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapDisplay.Designer.cs">
+      <DependentUpon>MapDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SaloCommon\SaloCommon.csproj">
-      <Project>{b50126b5-d2ee-4097-930e-6257c57e9311}</Project>
-      <Name>SaloCommon</Name>
-    </ProjectReference>
+    <EmbeddedResource Include="MapDisplay.resx">
+      <DependentUpon>MapDisplay.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\SaloMapGenerator\SaloMapGenerator.csproj">
       <Project>{2fb4edd2-e67b-4b44-ad8c-dadbabe27839}</Project>
       <Name>SaloMapGenerator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SaloCommon\SaloCommon.csproj">
+      <Project>{b50126b5-d2ee-4097-930e-6257c57e9311}</Project>
+      <Name>SaloCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

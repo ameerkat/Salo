@@ -11,7 +11,7 @@ namespace SaloMapGenerator
     {
         private const double startingScale = 1.0;
         private static Random rnd = new Random();
-        private const double maxStartingRange = 0.25;
+        private const double maxStartingRange = 0.125;
 
         public enum GalaxyType {
             RandomHex, // only this is supported right now
@@ -79,9 +79,9 @@ namespace SaloMapGenerator
         }
 
         public static Map GenerateMap(
-            int players, 
-            int starsPerPlayer, 
+            int players,
             int startingStars,
+            int starsPerPlayer,
             GalaxyType galaxyType = GalaxyType.RandomHex, 
             ResourcesLevel resources = ResourcesLevel.Standard,
             StartingDistance startingDistance = StartingDistance.Medium)
@@ -128,8 +128,8 @@ namespace SaloMapGenerator
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
                         clusterMeanDistance = CalculateClusterMeanDistance(Cluster, x, y);
-                    } while (clusterMeanDistance < (maxStartingRange / 2.0) &&
-                        clusterMeanDistance > maxStartingRange);
+                    } while (clusterMeanDistance < (maxStartingRange / 2) &&
+                        clusterMeanDistance > (maxStartingRange));
                     var Star = new MapStar()
                     {
                         id = global_star_counter++,
