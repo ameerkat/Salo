@@ -8,6 +8,9 @@ namespace TritonSimulator.InternalModels
 {
     public class Game
     {
+        public int fleetId { get; set; }
+        public int playerId { get; set; }
+        public int starId { get; set; }
         public List<Fleet> Fleets { get; set; }
         public List<Player> Players { get; set; }
         public List<Star> Stars { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SaloCommon.InternalModels.Map
+namespace TritonSimulator.InternalModels.Map
 {
     public class MapStar
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SaloCommon.InternalModels.Map;
+using TritonSimulator.InternalModels.Map;
 
 namespace SaloMapGenerator
 {
@@ -52,27 +52,12 @@ namespace SaloMapGenerator
             return resources == 0 ? 1 : resources;
         }
 
-        private static double CalculateEuclideanDistance(double x1, double x2, double y1, double y2)
-        {
-            return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
-        }
-
-        private static double CalculateClusterMeanDistance(List<MapStar> cluster, double x, double y)
-        {
-            return cluster.Average((star) => CalculateEuclideanDistance(star.x, x, star.y, y));
-        }
-
-        private static double DegreesToRadians(double a)
-        {
-            return a * Math.PI / 180;
-        }
-
         private static bool IsClustersOverlap(List<List<MapStar>> clusters, List<MapStar> cluster, double threshold)
         {
             var homeStar = cluster.Where(star => star.isHomeStar).First();
             foreach (var c in clusters)
             {
-                if (CalculateClusterMeanDistance(c, homeStar.x, homeStar.y) < threshold)
+                if (Salo.Geometry.CalculateClusterMeanDistance(c, homeStar.x, homeStar.y) < threshold)
                     return true;
             }
             return false;
@@ -127,7 +112,7 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < (maxStartingRange / 2) &&
                         clusterMeanDistance > (maxStartingRange));
                     var Star = new MapStar()
@@ -151,7 +136,7 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < maxStartingRange);
                     var Star = new MapStar()
                     {
@@ -186,7 +171,7 @@ namespace SaloMapGenerator
                         throw new Exception();
                     }
 
-                    var rotationAngle = DegreesToRadians(60 * angleToTry);
+                    var rotationAngle = Salo.Geometry.DegreesToRadians(60 * angleToTry);
                     
                     foreach (var star in Cluster)
                     {

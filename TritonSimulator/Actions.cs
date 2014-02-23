@@ -4,21 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TritonSimulator.InternalModels;
+using Salo;
 
 namespace TritonSimulator
 {
     public static class Actions
     {
+        /*
+         * Configuration
+         */
+        private const int DevelopmentCostEconomy = 2;
+        private const int DevelopmentCostIndustry = 2;
+        private const int DevelopmentCostScience = 2;
+        private const double BaseVisibilityRange = 0.75;
+        private const double ScanningMultiplier = 0.1;
+        private const double BaseFleetRange = 1;
+        private const double PropulsionMultiplier = 0.15;
+        private const int FleetCost = 25;
+
         public enum UpgradeType {
             Economy,
             Industry,
             Science,
             WarpGate
         }
-
-        private const int DevelopmentCostEconomy = 2;
-        private const int DevelopmentCostIndustry = 2;
-        private const int DevelopmentCostScience = 2;
 
         public static int TrueResources(this Star star){
             return star.Resources + (star.Owner.Tech.Levels[Technology.Technologies.Terraforming] * 5);
@@ -70,11 +79,108 @@ namespace TritonSimulator
             }
         }
 
-        public static bool IsVisible(this Star star, Player player)
+        public static bool IsVisible(IEnumerable<Star> stars, Star star, Player player)
         {
-            return true; // omnipotence! Need to actually calculate
-            // visibility is based only on stars, ships don't add to visibility
-            // also based on scanning technology
+            // TODO Not sure what the actual values are here
+            var visibilityRange = BaseVisibilityRange + player.Tech.Levels[Technology.Technologies.Scanning] * ScanningMultiplier;
+            foreach(var playerStar in stars.Where(x => x.Owner == player)){
+                if(playerStar.DistanceTo(star) <= visibilityRange){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static IEnumerable<Star> GetVisibleStars(IEnumerable<Star> stars, Player player)
+        {
+            return stars.Where(x => IsVisible(stars, x, player));
+        }
+
+        private static double GetFleetRange(Player player)
+        {
+            return BaseFleetRange + player.Tech.Levels[Technology.Technologies.Range] * PropulsionMultiplier;
+        }
+
+        public static bool IsReachable(IEnumerable<Star> stars, Star star, Player player)
+        {
+            var fleetRange = GetFleetRange(player);
+            foreach (var playerStar in stars.Where(x => x.Owner == player))
+            {
+                if (playerStar.DistanceTo(star) <= fleetRange)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static IEnumerable<Star> GetReachableStars(IEnumerable<Star> stars, Player player)
+        {
+            return stars.Where(x => IsReachable(stars, x, player));
+        }
+
+        public static void BuildFleet(Game game, Star star)
+        {
+            if (star.Owner.Cash >= FleetCost)
+            {
+                star.Owner.Cash -= FleetCost;
+                game.Fleets.Add(new Fleet()
+                {
+                    Id = game.fleetId++,
+                    Name = NameGenerator.GenerateFleetName(star),
+                    OriginStar = null,
+                    DestinationStar = null,
+                    CurrentStar = star,
+                    InTransit = false,
+                    DistanceToDestination = 0,
+                    Ships = 0, // ships get transfered on movement
+                    ToProcess = false,
+                    Owner = star.Owner
+                });
+            }
+        }
+
+        public static void Move(Game game, Star originStar, Star destinationStar, int ships)
+        {
+            var useFleet = game.Fleets.Where(x => x.CurrentStar != null && x.CurrentStar == originStar).FirstOrDefault();
+            if (useFleet == null)
+            {
+                throw new FleetRequiredToMoveException();
+            }
+
+            var distance = Geometry.CalculateEuclideanDistance(originStar, destinationStar);
+            if (distance > GetFleetRange(originStar.Owner))
+            {
+                throw new InsufficientRangeException();
+            }
+
+            if (ships > originStar.Ships)
+            {
+                throw new InsufficientShipsException();
+            }
+
+            useFleet.Ships += ships;
+            originStar.Ships -= ships;
+            useFleet.OriginStar = originStar;
+            useFleet.DestinationStar = destinationStar;
+            useFleet.CurrentStar = null;
+            useFleet.InTransit = true;
+            useFleet.DistanceToDestination = distance;
+        }
+
+        public static void MoveAll(Game game, Star originStar, Star destinationStar)
+        {
+            Move(game, originStar, destinationStar, (int)originStar.Ships);
+        }
+
+        public static void SetCurrentResearch(Player player, Technology.Technologies tech)
+        {
+            player.CurrentlyResearching = tech;
+        }
+
+        public static void SetNextResearch(Player player, Technology.Technologies tech)
+        {
+            player.NextResearching = tech;
         }
     }
 }

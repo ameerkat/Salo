@@ -49,8 +49,10 @@
     <None Include="Configuration.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="ISaloBot.cs" />
+    <Compile Include="TritonActionException.cs" />
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="PlayerActions.cs" />
+    <Compile Include="Actions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="packages.config" />

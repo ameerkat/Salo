@@ -144,16 +144,14 @@ namespace TritonSimulator
             }
 
             // Initialize Stars
-            var global_starcount = 0;
-            var global_fleetcount = 0;
             game.Stars = new List<Star>(players * starsPerPlayer);
             game.Fleets = new List<Fleet>(players * game.StartingFleets);
             foreach (var mapStar in map.stars)
             {
                 var star = new Star(){
-                    Id = global_starcount,
+                    Id = game.starId,
                     Owner = game.Players[mapStar.player],
-                    Name = NewStarName(global_starcount.ToString()),
+                    Name = NewStarName(game.starId.ToString()),
                     x = mapStar.x,
                     y = mapStar.y,
                     Ships = mapStar.isStartingStar ? game.StartingShips : 0,
@@ -163,7 +161,7 @@ namespace TritonSimulator
                     Resources = mapStar.resources,
                     WarpGate = false
                 };
-                global_starcount++;
+                game.starId++;
                 game.Stars.Add(star);
 
                 // add a fleet to the homestar
@@ -171,7 +169,7 @@ namespace TritonSimulator
                 {
                     game.Fleets.Add(new Fleet()
                     {
-                        Id = global_fleetcount,
+                        Id = game.fleetId,
                         Name = star.Name + " 1",
                         OriginStar = null,
                         DestinationStar = null,
@@ -183,7 +181,7 @@ namespace TritonSimulator
                         Owner = star.Owner
                     });
 
-                    global_fleetcount++;
+                    game.fleetId++;
                 }
             };
 
@@ -203,7 +201,7 @@ namespace TritonSimulator
                     var star = starCandidates.ToList().RandomElement();
                     game.Fleets.Add(new Fleet()
                     {
-                        Id = global_fleetcount,
+                        Id = game.fleetId,
                         Name = star.Name + " 1",
                         OriginStar = null,
                         DestinationStar = null,
@@ -215,7 +213,7 @@ namespace TritonSimulator
                         Owner = star.Owner
                     });
 
-                    global_fleetcount++;
+                    game.fleetId++;
                 }
             }
 
@@ -274,21 +272,24 @@ namespace TritonSimulator
                 // in between
                 foreach (var fleet in game.Fleets)
                 {
-                    // Take into account warp gates
-                    var speedModifier = 1;
-                    if (fleet.InTransit && fleet.OriginStar.WarpGate && fleet.DestinationStar.WarpGate)
+                    if (fleet.InTransit)
                     {
-                        speedModifier = game.WarpGateModifier;
-                    }
-                    
-                    fleet.DistanceToDestination -= (game.FleetSpeed * speedModifier);
-                    if (fleet.DistanceToDestination <= 0)
-                    {
-                        fleet.CurrentStar = fleet.DestinationStar;
-                        fleet.DestinationStar = null;
-                        fleet.OriginStar = null;
-                        fleet.InTransit = false;
-                        fleet.ToProcess = true;
+                        // Take into account warp gates
+                        var speedModifier = 1;
+                        if (fleet.OriginStar.WarpGate && fleet.DestinationStar.WarpGate)
+                        {
+                            speedModifier = game.WarpGateModifier;
+                        }
+
+                        fleet.DistanceToDestination -= (game.FleetSpeed * speedModifier);
+                        if (fleet.DistanceToDestination <= 0)
+                        {
+                            fleet.CurrentStar = fleet.DestinationStar;
+                            fleet.DestinationStar = null;
+                            fleet.OriginStar = null;
+                            fleet.InTransit = false;
+                            fleet.ToProcess = true;
+                        }
                     }
                 }
 
@@ -310,7 +311,7 @@ namespace TritonSimulator
                 {
                     if (fleet.ToProcess != true)
                     {
-                        if (fleet.CurrentStar.Owner != null)
+                        if (fleet.CurrentStar.Owner != null && fleet.CurrentStar.Owner != fleet.Owner)
                         {
                             var attackerWeapons =
                                 fleet.Owner.Tech.Levels[Technology.Technologies.Weapons];
@@ -345,6 +346,9 @@ namespace TritonSimulator
                                 // no ownership change, remove attacking fleet
                                 fleetsToRemoveFromGame.Add(fleet);
                             }
+                        } else if(fleet.CurrentStar.Owner == fleet.Owner){
+                            fleet.CurrentStar.Ships += fleet.Ships;
+                            fleet.Ships = 0;
                         }
                         else
                         {
@@ -352,6 +356,7 @@ namespace TritonSimulator
                             fleet.CurrentStar.Ships = fleet.Ships;
                             fleet.Ships = 0;
                         }
+
                         fleet.ToProcess = false;
                     }
                 }

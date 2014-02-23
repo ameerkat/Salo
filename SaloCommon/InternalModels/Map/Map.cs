@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SaloCommon.InternalModels.Map
+namespace TritonSimulator.InternalModels.Map
 {
     /// <summary>
     /// In reality map is a list of stars, but since we don't want to serialize all the player

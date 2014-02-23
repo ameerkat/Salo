@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SaloCommon.Models
+namespace TritonSimulator.Models
 {
     public class Event
     {
