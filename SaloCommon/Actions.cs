@@ -187,5 +187,35 @@ namespace TritonSimulator
         {
             player.NextResearching = tech;
         }
+
+        public static Star GetCheapestUpgradeStar(IEnumerable<Star> stars, Actions.UpgradeType upgrade)
+        {
+            var investmentCosts = stars.Select(x => new KeyValuePair<Star, int>(x, TritonSimulator.Actions.UpgradeCost(x, upgrade)));
+            var minInvestmentCost = investmentCosts.Min(x => x.Value);
+            return investmentCosts.First(x => x.Value == minInvestmentCost).Key;
+        }
+
+
+        public static int CalculateAttackSuccess(Game game, Star origin, Star destination)
+        {
+            var attackerWeapons = origin.Owner.Tech.Levels[Technology.Technologies.Weapons];
+            var defenderWeapons = destination.Owner.Tech.Levels[Technology.Technologies.Weapons] + game.DefenderBonus;
+            int originShips = (int)origin.Ships;
+            int destinationShips = (int)destination.Ships;
+            while (originShips > 0 && destinationShips > 0)
+            {
+                // defenders go first
+                originShips -= defenderWeapons;
+                if (originShips > 0)
+                    destinationShips -= attackerWeapons;
+            }
+
+            return originShips;
+        }
+
+        public static bool HasFleet(Game game, Star star)
+        {
+            return game.Fleets.Any(x => x.CurrentStar == star);
+        }
     }
 }

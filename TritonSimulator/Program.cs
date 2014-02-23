@@ -139,11 +139,13 @@ namespace TritonSimulator
                     Tech = new Technology(),
                     CurrentlyResearching = Technology.Technologies.Weapons, // defaults to weapons
                     NextResearching = Technology.Technologies.Weapons,
-                    Name = String.Format("Player{0}", i),
+                    Name = String.Format("Player {0}", i),
                     Cash = game.StartingCash
                 };
                 game.Players.Add(player);
                 var bot = new RandomBot();
+                BotName botName = (BotName) Attribute.GetCustomAttribute(typeof(RandomBot), typeof(BotName));
+                player.Name = String.Format("{0}(v{1}) #{2}", botName.Name, botName.Version, i);
                 bot.Initialize(player);
                 bots.Add(bot);
             }

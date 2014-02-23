@@ -7,14 +7,14 @@ using TritonSimulator.InternalModels;
 
 namespace TritonSimulator
 {
+    [BotName("Random Bot", 1.0)]
+    [BotDescription("Randomly selects a strategy (econ, war, science) for each production cycle.")]
     public class RandomBot : ISaloBot
     {
-        /*
-         * Configuration
-         */
-        double ballsiness = 0.1;
-
+        const double BALLSINESS = 0.1;
+        private static Random rnd = new Random();
         protected Player _player;
+        public Player Me { get { return _player; } }
 
         public RandomBot(){}
 
@@ -22,46 +22,8 @@ namespace TritonSimulator
             _player = player;
         }
 
-        public Player Me { get { return _player; } }
-
-        private static Random rnd = new Random();
-
-        private static Star GetCheapestUpgradeStar(IEnumerable<Star> stars, Actions.UpgradeType upgrade)
-        {
-            var investmentCosts = stars.Select(x => new KeyValuePair<Star, int>(x, TritonSimulator.Actions.UpgradeCost(x, upgrade)));
-            var minInvestmentCost = investmentCosts.Min(x => x.Value);
-            return investmentCosts.First(x => x.Value == minInvestmentCost).Key;
-        }
-
-        private static int CalculateAttackSuccess(Game game, Star origin, Star destination)
-        {
-            var attackerWeapons = origin.Owner.Tech.Levels[Technology.Technologies.Weapons];
-            var defenderWeapons = destination.Owner.Tech.Levels[Technology.Technologies.Weapons] + game.DefenderBonus;
-            int originShips = (int)origin.Ships;
-            int destinationShips = (int)destination.Ships;
-            while (originShips > 0 && destinationShips > 0)
-            {
-                // defenders go first
-                originShips -= defenderWeapons;
-                if (originShips > 0)
-                    destinationShips -= attackerWeapons;
-            }
-
-            return originShips;
-        }
-
-        private static bool HasFleet(Game game, Star star)
-        {
-            return game.Fleets.Any(x => x.CurrentStar == star);
-        }
-
         public void Run(Game game)
         {
-            /*
-             * Description
-             * Randomly decides strategy for each production cycle
-             */
-
             if (game.ElapsedTicks % game.ProductionRate == 0)
             {
                 var strat = rnd.Next(0, 3);
@@ -75,12 +37,12 @@ namespace TritonSimulator
                         // economical
                         Actions.SetCurrentResearch(Me, Technology.Technologies.Banking);
                         Actions.SetNextResearch(Me, Technology.Technologies.Banking);
-                        star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Economy);
+                        star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Economy);
                         upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Economy);
                         while (Me.Cash >= upgradeCost)
                         {
                             Actions.Upgrade(star, Actions.UpgradeType.Economy);
-                            star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Economy);
+                            star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Economy);
                             upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Economy);
                         }
                         break;
@@ -104,10 +66,10 @@ namespace TritonSimulator
                             {
                                 if (
                                     (Actions.IsVisible(game.Stars, starInRange, Me) 
-                                    && CalculateAttackSuccess(game, starThatCanAttack, starInRange) > 0)  // only calculate for stars we can see
-                                    || rnd.NextDouble() >= (1 - ballsiness))
+                                    && Actions.CalculateAttackSuccess(game, starThatCanAttack, starInRange) > 0)  // only calculate for stars we can see
+                                    || rnd.NextDouble() >= (1 - BALLSINESS))
                                 {
-                                    if (!HasFleet(game, starThatCanAttack))
+                                    if (!Actions.HasFleet(game, starThatCanAttack))
                                     {
                                         if (Me.Cash >= Actions.FleetCost)
                                         {
@@ -126,12 +88,12 @@ namespace TritonSimulator
                         }
 
                         // spend remaining on upgrades
-                        star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Industry);
+                        star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Industry);
                         upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Industry);
                         while (Me.Cash >= upgradeCost)
                         {
                             Actions.Upgrade(star, Actions.UpgradeType.Industry);
-                            star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Industry);
+                            star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Industry);
                             upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Industry);
                         }
                         break;
@@ -139,12 +101,12 @@ namespace TritonSimulator
                         // science
                         Actions.SetCurrentResearch(Me, Technology.Technologies.Experimentation);
                         Actions.SetNextResearch(Me, Technology.Technologies.Experimentation);
-                        star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Science);
+                        star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Science);
                         upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Science);
                         while (Me.Cash >= upgradeCost)
                         {
                             Actions.Upgrade(star, Actions.UpgradeType.Science);
-                            star = GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Science);
+                            star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Science);
                             upgradeCost = Actions.UpgradeCost(star, Actions.UpgradeType.Science);
                         }
                         break;
