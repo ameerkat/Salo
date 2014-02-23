@@ -20,7 +20,7 @@ namespace TritonSimulator
         private const double ScanningMultiplier = 0.1;
         private const double BaseFleetRange = 1;
         private const double PropulsionMultiplier = 0.15;
-        private const int FleetCost = 25;
+        public const int FleetCost = 25;
 
         public enum UpgradeType {
             Economy,
@@ -36,13 +36,13 @@ namespace TritonSimulator
         public static int UpgradeCost(this Star star, UpgradeType upgradeType){
             switch(upgradeType){
                 case UpgradeType.Economy:
-                    return (int)(2.5 * DevelopmentCostEconomy * (star.Economy + 1) / (star.TrueResources() / 100));
+                    return (int)(2.5 * DevelopmentCostEconomy * (star.Economy + 1) / (star.TrueResources() / 100.0));
                 case UpgradeType.Industry:
-                    return (int)(5 * DevelopmentCostIndustry * (star.Industry + 1) / (star.TrueResources() / 100));
+                    return (int)(5 * DevelopmentCostIndustry * (star.Industry + 1) / (star.TrueResources() / 100.0));
                 case UpgradeType.Science:
-                    return (int)(20 * DevelopmentCostScience * (star.Science + 1) / (star.TrueResources() / 100));
+                    return (int)(20 * DevelopmentCostScience * (star.Science + 1) / (star.TrueResources() / 100.0));
                 case UpgradeType.WarpGate:
-                    return (int)(100 / (star.TrueResources() / 100));
+                    return (int)(100 / (star.TrueResources() / 100.0));
                 default:
                     return 0;
             }
@@ -117,6 +117,11 @@ namespace TritonSimulator
         public static IEnumerable<Star> GetReachableStars(IEnumerable<Star> stars, Player player)
         {
             return stars.Where(x => IsReachable(stars, x, player));
+        }
+
+        public static bool IsReachable(IEnumerable<Star> stars, Star origin, Star destination)
+        {
+            return Geometry.CalculateEuclideanDistance(origin, destination) <= GetFleetRange(origin.Owner);
         }
 
         public static void BuildFleet(Game game, Star star)

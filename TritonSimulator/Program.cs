@@ -127,6 +127,8 @@ namespace TritonSimulator
             var starsPerPlayer = int.Parse(data[MapSection]["StarsPerPlayer"]);
             var map = SaloMapGenerator.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer);
 
+            var bots = new List<ISaloBot>();
+
             // Initialize Players
             game.Players = new List<Player>(players);
             for (int i = 0; i < players; ++i)
@@ -141,6 +143,9 @@ namespace TritonSimulator
                     Cash = game.StartingCash
                 };
                 game.Players.Add(player);
+                var bot = new RandomBot();
+                bot.Initialize(player);
+                bots.Add(bot);
             }
 
             // Initialize Stars
@@ -223,7 +228,11 @@ namespace TritonSimulator
                 Player winner = CheckForWinner(game);
                 if (winner != null)
                 {
-                    GameOutput.WriteLine(String.Format("Player {0}({1}) has won.", winner.Id, winner.Name));
+                    GameOutput.WriteLine(String.Format("\nPlayer {0} ({1}) has won.", winner.Id, winner.Name));
+                    GameOutput.WriteLine(String.Format("Press any key to exit...", winner.Id, winner.Name));
+                    GameOutput.Flush();
+                    Console.ReadKey();
+                    break;
                 }
 
                 // Each pass of loop is one tick, loop should sleep to synch ticks
@@ -309,7 +318,7 @@ namespace TritonSimulator
                 List<Fleet> fleetsToRemoveFromGame = new List<Fleet>();
                 foreach (var fleet in game.Fleets)
                 {
-                    if (fleet.ToProcess != true)
+                    if (fleet.ToProcess)
                     {
                         if (fleet.CurrentStar.Owner != null && fleet.CurrentStar.Owner != fleet.Owner)
                         {
@@ -367,6 +376,10 @@ namespace TritonSimulator
                 }
 
                 // * Calculate any new moves
+                foreach (var bot in bots)
+                {
+                    bot.Run(game);
+                }
 
                 // * Sleep until tick is complete
             }

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions.cs" />
     <Compile Include="Geometry.cs" />
     <Compile Include="InternalModels\Fleet.cs" />
     <Compile Include="InternalModels\Game.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Models\Technology.cs" />
     <Compile Include="NameGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TritonActionException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
