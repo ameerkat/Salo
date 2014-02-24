@@ -98,7 +98,7 @@ namespace TritonSimulator
                         }
                         break;
                     case 2:
-                        // science
+                        // scientific
                         Actions.SetCurrentResearch(Me, Technology.Technologies.Experimentation);
                         Actions.SetNextResearch(Me, Technology.Technologies.Experimentation);
                         star = Actions.GetCheapestUpgradeStar(myStars, Actions.UpgradeType.Science);

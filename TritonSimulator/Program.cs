@@ -113,7 +113,7 @@ namespace TritonSimulator
              * * Position Updates
              * * Research
              * * Conflict
-             * * ~Ai Makes New Moves!
+             * * Bots Makes New Moves
              */
 
             Game game = new Game();
