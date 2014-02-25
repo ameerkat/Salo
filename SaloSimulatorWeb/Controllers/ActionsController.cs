@@ -1,28 +1,26 @@
-﻿using System;
+﻿using Salo;
+using Salo.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web;
 using System.Web.Http;
-using System.Web.Mvc;
-using Salo;
-using Salo.Models;
 
 namespace TritonSimulatorWeb.Controllers
 {
-    public class ActionsController : Controller
+    public class ActionsController : ApiController
     {
         /// <summary>
         /// Returns the current game state
         /// </summary>
         /// <returns>Game state in the form of TritonSimulator.InternalModels.Game</returns>
         [System.Web.Http.HttpGet]
-        public JsonResult Index(int id)
+        public Game Index(int id)
         {
             Game game; 
             if(GameIndex.Games.TryGetValue(id, out game)){
-                return Json(game, JsonRequestBehavior.AllowGet);
+                return game;
             } else {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
@@ -91,35 +89,35 @@ namespace TritonSimulatorWeb.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult IsVisible(int id, int starId, int playerId)
+        public bool IsVisible(int id, int starId, int playerId)
         {
             Game game = _GetGame(id);
             Star targetStar = _GetStar(game, starId);
             List<Star> stars = game.Stars;
             Player player = _GetPlayer(game, playerId);
 
-            return Json(_GetActionHandler(game).IsVisible(stars, targetStar, player), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).IsVisible(stars, targetStar, player);
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetVisibleStars(int id, int playerId)
+        public IEnumerable<Star> GetVisibleStars(int id, int playerId)
         {
             Game game = _GetGame(id);
             List<Star> stars = game.Stars;
             Player player = _GetPlayer(game, playerId);
 
-            return Json(_GetActionHandler(game).GetVisibleStars(stars, player), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).GetVisibleStars(stars, player);
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult IsReachable(int id, int starId, int playerId)
+        public bool IsReachable(int id, int starId, int playerId)
         {
             Game game = _GetGame(id);
             Star targetStar = _GetStar(game, starId);
             List<Star> stars = game.Stars;
             Player player = _GetPlayer(game, playerId);
 
-            return Json(_GetActionHandler(game).IsReachable(stars, targetStar, player), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).IsReachable(stars, targetStar, player);
         }
 
         [System.Web.Http.HttpPost]
@@ -180,7 +178,7 @@ namespace TritonSimulatorWeb.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult GetCheapestUpgradeStar(int id, string upgradeType)
+        public Star GetCheapestUpgradeStar(int id, string upgradeType)
         {
             Game game = _GetGame(id);
             List<Star> stars = game.Stars;
@@ -190,25 +188,25 @@ namespace TritonSimulatorWeb.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest) { ReasonPhrase = "Invalid upgrade type." });
             }
 
-            return Json(_GetActionHandler(game).GetCheapestUpgradeStar(stars, upgrade), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).GetCheapestUpgradeStar(stars, upgrade);
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult CalculateAttackSuccess(int id, int originStarId, int destinationStarId)
+        public int CalculateAttackSuccess(int id, int originStarId, int destinationStarId)
         {
             Game game = _GetGame(id);
             Star originStar = _GetStar(game, originStarId);
             Star destinationStar = _GetStar(game, destinationStarId);
 
-            return Json(_GetActionHandler(game).CalculateAttackSuccess(game, originStar, destinationStar), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).CalculateAttackSuccess(game, originStar, destinationStar);
         }
 
         [System.Web.Http.HttpGet]
-        public JsonResult HasFleet(int id, int starId)
+        public bool HasFleet(int id, int starId)
         {
             Game game = _GetGame(id);
             Star star = _GetStar(game, starId);
-            return Json(_GetActionHandler(game).HasFleet(game, star), JsonRequestBehavior.AllowGet);
+            return _GetActionHandler(game).HasFleet(game, star);
         }
     }
 }

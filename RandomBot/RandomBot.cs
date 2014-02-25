@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Salo;
+﻿using Salo;
 using Salo.Models;
+using System;
+using System.Linq;
 
 namespace RandomBot
 {
@@ -13,9 +10,11 @@ namespace RandomBot
     public class RandomBot : ISaloBot
     {
         const double BALLSINESS = 0.1;
+
         private static Random rnd = new Random();
         protected Player _player;
         protected IActionHandler _actionHandler;
+
         public Player Me { get { return _player; } }
         public IActionHandler Action { get { return _actionHandler; } }
 

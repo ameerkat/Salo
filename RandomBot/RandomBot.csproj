@@ -7,8 +7,8 @@
     <ProjectGuid>{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TritonSimulator</RootNamespace>
-    <AssemblyName>Salo</AssemblyName>
+    <RootNamespace>Salo</RootNamespace>
+    <AssemblyName>RandomBot</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">.\</SolutionDir>
