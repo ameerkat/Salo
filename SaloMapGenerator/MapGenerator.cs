@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TritonSimulator.InternalModels.Map;
+using Salo.Models.Map;
 
 namespace SaloMapGenerator
 {
@@ -57,7 +57,7 @@ namespace SaloMapGenerator
             var homeStar = cluster.Where(star => star.isHomeStar).First();
             foreach (var c in clusters)
             {
-                if (Salo.Geometry.CalculateClusterMeanDistance(c, homeStar.x, homeStar.y) < threshold)
+                if (Salo.Utility.Geometry.CalculateClusterMeanDistance(c, homeStar.x, homeStar.y) < threshold)
                     return true;
             }
             return false;
@@ -112,7 +112,7 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Utility.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < (maxStartingRange / 2) &&
                         clusterMeanDistance > (maxStartingRange));
                     var Star = new MapStar()
@@ -136,7 +136,7 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Utility.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < maxStartingRange);
                     var Star = new MapStar()
                     {
@@ -171,7 +171,7 @@ namespace SaloMapGenerator
                         throw new Exception();
                     }
 
-                    var rotationAngle = Salo.Geometry.DegreesToRadians(60 * angleToTry);
+                    var rotationAngle = Salo.Utility.Geometry.DegreesToRadians(60 * angleToTry);
                     
                     foreach (var star in Cluster)
                     {

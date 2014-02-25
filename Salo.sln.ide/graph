@@ -1,16 +1,19 @@
 ﻿<Solution Format="0.0.0.3">
-  <Version>2014-02-21T18:44:06.6414222Z</Version>
+  <Version>2014-02-24T18:35:08.8521722Z</Version>
+  <Project Path="C:\src\Salo\Salo\SaloMapGenerator\SaloMapGenerator.csproj">
+    <Reference Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
+  </Project>
   <Project Path="C:\src\Salo\Salo\TritonSimulator\TritonSimulator.csproj">
     <Reference Path="C:\src\Salo\Salo\SaloMapGenerator\SaloMapGenerator.csproj" />
     <Reference Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
+    <Reference Path="C:\src\Salo\Salo\Salo\Salo.csproj" />
   </Project>
   <Project Path="C:\src\Salo\Salo\SaloMapGeneratorConsole\SaloMapGeneratorConsole.csproj">
     <Reference Path="C:\src\Salo\Salo\SaloMapGenerator\SaloMapGenerator.csproj" />
     <Reference Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
   </Project>
-  <Project Path="C:\src\Salo\Salo\Salo\Salo.csproj" />
-  <Project Path="C:\src\Salo\Salo\SaloMapGenerator\SaloMapGenerator.csproj">
+  <Project Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
+  <Project Path="C:\src\Salo\Salo\Salo\Salo.csproj">
     <Reference Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
   </Project>
-  <Project Path="C:\src\Salo\Salo\SaloCommon\SaloCommon.csproj" />
 </Solution>

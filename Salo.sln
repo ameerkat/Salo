@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Salo", "Salo\Salo.csproj", "{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomBot", "RandomBot\RandomBot.csproj", "{2CF5F56F-905B-4091-82D2-A6F3671BDDDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TritonSimulator", "TritonSimulator\TritonSimulator.csproj", "{40A6462E-7494-47F8-8CD1-5C8DCA38C048}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloSimulator", "SaloSimulator\SaloSimulator.csproj", "{40A6462E-7494-47F8-8CD1-5C8DCA38C048}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloCommon", "SaloCommon\SaloCommon.csproj", "{B50126B5-D2EE-4097-930E-6257C57E9311}"
 EndProject
@@ -17,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5551CB
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloSimulatorWeb", "SaloSimulatorWeb\SaloSimulatorWeb.csproj", "{E9B0CB4B-04BA-44A6-AFD8-491D35653910}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,10 @@ Global
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

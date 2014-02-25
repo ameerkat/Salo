@@ -44,32 +44,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actions.cs" />
+    <Compile Include="ActionHandlers\ActionHandler.cs" />
+    <Compile Include="ActionHandlers\IActionHandler.cs" />
     <Compile Include="Attributes\BotDescription.cs" />
     <Compile Include="Attributes\BotName.cs" />
-    <Compile Include="Geometry.cs" />
-    <Compile Include="InternalModels\Fleet.cs" />
-    <Compile Include="InternalModels\Game.cs" />
-    <Compile Include="InternalModels\Map\Map.cs" />
-    <Compile Include="InternalModels\Map\MapStar.cs" />
-    <Compile Include="InternalModels\Player.cs" />
-    <Compile Include="InternalModels\Star.cs" />
-    <Compile Include="InternalModels\Technology.cs" />
+    <Compile Include="Models\Enumerations.cs" />
+    <Compile Include="Utility\Geometry.cs" />
+    <Compile Include="Models\Simulator\Fleet.cs" />
+    <Compile Include="Models\Simulator\Game.cs" />
+    <Compile Include="Models\Simulator\Map\Map.cs" />
+    <Compile Include="Models\Simulator\Map\MapStar.cs" />
+    <Compile Include="Models\Simulator\Player.cs" />
+    <Compile Include="Models\Simulator\Star.cs" />
+    <Compile Include="Models\Simulator\Technology.cs" />
     <Compile Include="ISaloBot.cs" />
-    <Compile Include="Models\Event.cs" />
-    <Compile Include="Models\Fleet.cs" />
-    <Compile Include="Models\Player.cs" />
-    <Compile Include="Models\Report.cs" />
-    <Compile Include="Models\Request.cs" />
-    <Compile Include="Models\Star.cs" />
-    <Compile Include="Models\Technology.cs" />
-    <Compile Include="NameGenerator.cs" />
+    <Compile Include="ActionHandlers\LiveWebActionHandler.cs" />
+    <Compile Include="Models\Live\Event.cs" />
+    <Compile Include="Models\Live\Fleet.cs" />
+    <Compile Include="Models\Live\Player.cs" />
+    <Compile Include="Models\Live\Report.cs" />
+    <Compile Include="Models\Live\Request.cs" />
+    <Compile Include="Models\Live\Star.cs" />
+    <Compile Include="Models\Live\Technology.cs" />
+    <Compile Include="Utility\NameGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TritonActionException.cs" />
+    <Compile Include="Exceptions\TritonActionException.cs" />
+    <Compile Include="ActionHandlers\SimulatorWebActionHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
