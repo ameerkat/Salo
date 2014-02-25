@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5551CB
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloSimulatorWeb", "SaloSimulatorWeb\SaloSimulatorWeb.csproj", "{E9B0CB4B-04BA-44A6-AFD8-491D35653910}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaloSimulatorWeb", "SaloSimulatorWeb\SaloSimulatorWeb.csproj", "{22CEA8AF-1AD7-4395-AE14-166F09F6D53B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,10 +48,10 @@ Global
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E239963-C847-4A83-970D-C4D3C922BEB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E9B0CB4B-04BA-44A6-AFD8-491D35653910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22CEA8AF-1AD7-4395-AE14-166F09F6D53B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22CEA8AF-1AD7-4395-AE14-166F09F6D53B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22CEA8AF-1AD7-4395-AE14-166F09F6D53B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22CEA8AF-1AD7-4395-AE14-166F09F6D53B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

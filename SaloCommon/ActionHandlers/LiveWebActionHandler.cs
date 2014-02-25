@@ -25,7 +25,7 @@ namespace Salo.Live
             throw new NotImplementedException();
         }
 
-        public bool IsReachable(IEnumerable<Salo.Models.Star> stars, Salo.Models.Star star, Salo.Models.Player player)
+        public bool IsReachableByPlayer(IEnumerable<Salo.Models.Star> stars, Salo.Models.Star star, Salo.Models.Player player)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +35,7 @@ namespace Salo.Live
             throw new NotImplementedException();
         }
 
-        public bool IsReachable(IEnumerable<Salo.Models.Star> stars, Salo.Models.Star origin, Salo.Models.Star destination)
+        public bool IsReachable(IEnumerable<Salo.Models.Star> stars, Salo.Models.Star originStar, Salo.Models.Star destinationStar)
         {
             throw new NotImplementedException();
         }
@@ -65,12 +65,12 @@ namespace Salo.Live
             throw new NotImplementedException();
         }
 
-        public Salo.Models.Star GetCheapestUpgradeStar(IEnumerable<Salo.Models.Star> stars, UpgradeType upgrade)
+        public Salo.Models.Star GetCheapestUpgradeStar(IEnumerable<Salo.Models.Star> stars, Salo.Models.Player player, UpgradeType upgrade)
         {
             throw new NotImplementedException();
         }
 
-        public int CalculateAttackSuccess(Salo.Models.Game game, Salo.Models.Star origin, Salo.Models.Star destination)
+        public int CalculateAttackSuccess(Salo.Models.Game game, Salo.Models.Star originStar, Salo.Models.Star destinationStar)
         {
             throw new NotImplementedException();
         }

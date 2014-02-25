@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace TritonSimulatorWeb.Controllers
+namespace SaloSimulatorWeb.Controllers
 {
     public class ActionsController : ApiController
     {
@@ -18,10 +18,13 @@ namespace TritonSimulatorWeb.Controllers
         [System.Web.Http.HttpGet]
         public Game Index(int id)
         {
-            Game game; 
-            if(GameIndex.Games.TryGetValue(id, out game)){
+            Game game;
+            if (GameIndex.Games.TryGetValue(id, out game))
+            {
                 return game;
-            } else {
+            }
+            else
+            {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
         }
@@ -67,7 +70,8 @@ namespace TritonSimulatorWeb.Controllers
             Game game = _GetGame(id);
             Star star = _GetStar(game, starId);
             UpgradeType upgrade;
-            if(!Enum.TryParse<UpgradeType>(upgradeType, out upgrade)){
+            if (!Enum.TryParse<UpgradeType>(upgradeType, out upgrade))
+            {
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest) { ReasonPhrase = "Invalid upgrade type." });
             }
 
@@ -110,14 +114,25 @@ namespace TritonSimulatorWeb.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public bool IsReachable(int id, int starId, int playerId)
+        public bool IsReachableByPlayer(int id, int starId, int playerId)
         {
             Game game = _GetGame(id);
             Star targetStar = _GetStar(game, starId);
             List<Star> stars = game.Stars;
             Player player = _GetPlayer(game, playerId);
 
-            return _GetActionHandler(game).IsReachable(stars, targetStar, player);
+            return _GetActionHandler(game).IsReachableByPlayer(stars, targetStar, player);
+        }
+
+        [System.Web.Http.HttpGet]
+        public bool IsReachable(int id, int originStarId, int destinationStarId)
+        {
+            Game game = _GetGame(id);
+            Star originStar = _GetStar(game, originStarId);
+            Star destinationStar = _GetStar(game, originStarId);
+            List<Star> stars = game.Stars;
+
+            return _GetActionHandler(game).IsReachable(stars, originStar, destinationStar);
         }
 
         [System.Web.Http.HttpPost]
@@ -178,9 +193,10 @@ namespace TritonSimulatorWeb.Controllers
         }
 
         [System.Web.Http.HttpGet]
-        public Star GetCheapestUpgradeStar(int id, string upgradeType)
+        public Star GetCheapestUpgradeStar(int id, int playerId, string upgradeType)
         {
             Game game = _GetGame(id);
+            Player player = _GetPlayer(game, playerId);
             List<Star> stars = game.Stars;
             UpgradeType upgrade;
             if (!Enum.TryParse<UpgradeType>(upgradeType, out upgrade))
@@ -188,7 +204,7 @@ namespace TritonSimulatorWeb.Controllers
                 throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.BadRequest) { ReasonPhrase = "Invalid upgrade type." });
             }
 
-            return _GetActionHandler(game).GetCheapestUpgradeStar(stars, upgrade);
+            return _GetActionHandler(game).GetCheapestUpgradeStar(stars, player, upgrade);
         }
 
         [System.Web.Http.HttpGet]

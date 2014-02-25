@@ -93,7 +93,7 @@ namespace Salo
             return BaseFleetRange + player.Tech.Levels[Technologies.Range] * PropulsionMultiplier;
         }
 
-        public bool IsReachable(IEnumerable<Star> stars, Star star, Player player)
+        public bool IsReachableByPlayer(IEnumerable<Star> stars, Star star, Player player)
         {
             var fleetRange = GetFleetRange(player);
             foreach (var playerStar in stars.Where(x => x.Owner == player))
@@ -108,7 +108,7 @@ namespace Salo
 
         public IEnumerable<Star> GetReachableStars(IEnumerable<Star> stars, Player player)
         {
-            return stars.Where(x => IsReachable(stars, x, player));
+            return stars.Where(x => IsReachableByPlayer(stars, x, player));
         }
 
         public bool IsReachable(IEnumerable<Star> stars, Star origin, Star destination)
@@ -180,20 +180,20 @@ namespace Salo
             player.NextResearching = tech;
         }
 
-        public Star GetCheapestUpgradeStar(IEnumerable<Star> stars, UpgradeType upgrade)
+        public Star GetCheapestUpgradeStar(IEnumerable<Star> stars, Player player, UpgradeType upgrade)
         {
-            var investmentCosts = stars.Select(x => new KeyValuePair<Star, int>(x, UpgradeCost(x, upgrade)));
+            var investmentCosts = stars.Where(x => x.Owner == player).Select(x => new KeyValuePair<Star, int>(x, UpgradeCost(x, upgrade)));
             var minInvestmentCost = investmentCosts.Min(x => x.Value);
             return investmentCosts.First(x => x.Value == minInvestmentCost).Key;
         }
 
 
-        public int CalculateAttackSuccess(Game game, Star origin, Star destination)
+        public int CalculateAttackSuccess(Game game, Star originStar, Star destinationStar)
         {
-            var attackerWeapons = origin.Owner.Tech.Levels[Technologies.Weapons];
-            var defenderWeapons = destination.Owner.Tech.Levels[Technologies.Weapons] + game.DefenderBonus;
-            int originShips = (int)origin.Ships;
-            int destinationShips = (int)destination.Ships;
+            var attackerWeapons = originStar.Owner.Tech.Levels[Technologies.Weapons];
+            var defenderWeapons = destinationStar.Owner.Tech.Levels[Technologies.Weapons] + game.DefenderBonus;
+            int originShips = (int)originStar.Ships;
+            int destinationShips = (int)destinationStar.Ships;
             while (originShips > 0 && destinationShips > 0)
             {
                 // defenders go first

@@ -40,12 +40,12 @@ namespace RandomBot
                         // economical
                         Action.SetCurrentResearch(Me, Technologies.Banking);
                         Action.SetNextResearch(Me, Technologies.Banking);
-                        star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Economy);
+                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Economy);
                         upgradeCost = Action.UpgradeCost(star, UpgradeType.Economy);
                         while (Me.Cash >= upgradeCost)
                         {
                             Action.Upgrade(star, UpgradeType.Economy);
-                            star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Economy);
+                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Economy);
                             upgradeCost = Action.UpgradeCost(star, UpgradeType.Economy);
                         }
                         break;
@@ -91,12 +91,12 @@ namespace RandomBot
                         }
 
                         // spend remaining on upgrades
-                        star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Industry);
+                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Industry);
                         upgradeCost = Action.UpgradeCost(star, UpgradeType.Industry);
                         while (Me.Cash >= upgradeCost)
                         {
                             Action.Upgrade(star, UpgradeType.Industry);
-                            star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Industry);
+                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Industry);
                             upgradeCost = Action.UpgradeCost(star, UpgradeType.Industry);
                         }
                         break;
@@ -104,12 +104,12 @@ namespace RandomBot
                         // scientific
                         Action.SetCurrentResearch(Me, Technologies.Experimentation);
                         Action.SetNextResearch(Me, Technologies.Experimentation);
-                        star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Science);
+                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Science);
                         upgradeCost = Action.UpgradeCost(star, UpgradeType.Science);
                         while (Me.Cash >= upgradeCost)
                         {
                             Action.Upgrade(star, UpgradeType.Science);
-                            star = Action.GetCheapestUpgradeStar(myStars, UpgradeType.Science);
+                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Science);
                             upgradeCost = Action.UpgradeCost(star, UpgradeType.Science);
                         }
                         break;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace TritonSimulatorWeb
+namespace SaloSimulatorWeb
 {
     public static class WebApiConfig
     {
@@ -15,9 +15,15 @@ namespace TritonSimulatorWeb
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                name: "Actions",
+                routeTemplate: "api/actions/{action}/{id}",
+                defaults: new { controller = "Actions" }
+            );
+
+            config.Routes.MapHttpRoute(
+                name: "Game",
+                routeTemplate: "api/games/{action}",
+                defaults: new { controller = "Games" }
             );
         }
     }

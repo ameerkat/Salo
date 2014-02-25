@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace TritonSimulatorWeb
+namespace SaloSimulatorWeb
 {
     public class FilterConfig
     {
