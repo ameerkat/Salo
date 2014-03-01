@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace RandomBot
 {
-    [BotName("Random Bot", 1.0)]
+    [BotName("Random Bot", "1.0")]
     [BotDescription("Randomly selects a strategy (econ, war, science) for each production cycle.")]
     public class RandomBot : ISaloBot
     {

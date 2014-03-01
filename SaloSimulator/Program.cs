@@ -232,7 +232,7 @@ namespace Salo
                 if (winner != null)
                 {
                     GameOutput.WriteLine(String.Format("\nPlayer {0} ({1}) has won.", winner.Id, winner.Name));
-                    GameOutput.WriteLine(String.Format("Press any key to exit...", winner.Id, winner.Name));
+                    GameOutput.WriteLine(String.Format("Press any key to exit..."));
                     GameOutput.Flush();
                     Console.ReadKey();
                     break;
