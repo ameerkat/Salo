@@ -6,55 +6,22 @@
 
 <h2>Create</h2>
 
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm("Upload", "Bot", FormMethod.Post, new Dictionary<string, object>(){ {"enctype", "multipart/form-data" }})) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>BotModel</h4>
+        <h4>Bot</h4>
         <hr />
         @Html.ValidationSummary(true)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BotName, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BotName)
-                @Html.ValidationMessageFor(model => model.BotName)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BotVersion, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BotVersion)
-                @Html.ValidationMessageFor(model => model.BotVersion)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BotDescription, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.BotDescription)
-                @Html.ValidationMessageFor(model => model.BotDescription)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.AssemblyPath, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.AssemblyPath)
-                @Html.ValidationMessageFor(model => model.AssemblyPath)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Created, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Created)
-                @Html.ValidationMessageFor(model => model.Created)
-            </div>
-        </div>
+        <label for="file">Assembly: </label>
+        <input type="file" name="file" id="file" />
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Mime;
@@ -18,15 +21,30 @@ namespace SaloSimulatorWeb2.Controllers
         public enum MessageType { Ok, Error }
 
         [Authorize]
+        [HttpPost]
         public ActionResult Upload(HttpPostedFileBase file)
         {
             if (file.ContentLength > 0)
             {
                 var fileName = Path.GetFileName(file.FileName);
-                var path = Path.Combine(Server.MapPath("~/App_Data/Bots/tmp/"), Guid.NewGuid().ToString());
+                var folder = Server.MapPath("~/App_Data/Bots/tmp/");
+                var path = Path.Combine(folder, Guid.NewGuid().ToString() + ".dll");
+                System.IO.Directory.CreateDirectory(folder);
                 file.SaveAs(path);
                 // load up the info
-                var assembly = Assembly.LoadFrom(path);
+                Assembly assembly;
+                try
+                {
+                    assembly = Assembly.LoadFrom(path);
+                }
+                catch (Exception exception)
+                {
+                    ViewBag.Message = "Failed to load assembly.";
+                    ViewBag.MessageType = MessageType.Error;
+                    System.IO.File.Delete(path); // remove from temporary
+                    return View("Create");
+                }
+
                 var types = assembly.GetExportedTypes();
                 foreach (var type in types)
                 {
@@ -65,42 +83,56 @@ namespace SaloSimulatorWeb2.Controllers
                                 bot.BotDescription = String.Empty;
                             }
 
-                            var newPath =
-                                Path.Combine(
-                                    Server.MapPath(String.Format("~/App_Data/Bots/{0}/{1}/{2}", this.User.Identity.Name,
-                                        bot.BotName, bot.BotVersion)), fileName);
+                            var newFolder =
+                                Server.MapPath(String.Format("~/App_Data/Bots/{0}/{1}/{2}", this.User.Identity.Name,
+                                    bot.BotName, bot.BotVersion));
+                            var newPath = Path.Combine(newFolder, fileName);
                             bot.AssemblyPath = newPath;
+                            System.IO.Directory.CreateDirectory(newFolder);
                             file.SaveAs(newPath);
 
                             using (var appContext = new ApplicationDbContext())
                             {
-                                bot.Uploader = appContext.Users.Find(this.User.Identity.GetUserId());
-                            }
+                                var existingBot =
+                                    appContext.Bots.FirstOrDefault(
+                                        x => x.BotName == bot.BotName && x.BotVersion == bot.BotVersion);
+                                if (existingBot != null)
+                                {
+                                    bot.Id = existingBot.Id;
+                                }
 
-                            using (var botContext = new SaloDbContext())
-                            {
-                                botContext.Bots.Add(bot);
-                                botContext.SaveChanges();
+                                bot.Uploader = appContext.Users.Find(this.User.Identity.GetUserId());
+                                appContext.Bots.Add(bot);
+                                try
+                                {
+                                    appContext.SaveChanges();
+                                }
+                                catch (DbEntityValidationException ex)
+                                {
+                                    throw;
+                                }
                             }
                         }
                     }
                 }
-
-                ViewBag.Message = "Upload successfull!";
-                ViewBag.MessageType = MessageType.Ok;
-                return View("Bot/Index.cshtml");
+                RedirectToAction("Index");
             }
 
             ViewBag.Message = "No file attached...";
             ViewBag.MessageType = MessageType.Error;
-            return View("Bot/Index.cshtml");
+            return View("Create");
         }
 
         //
         // GET: /Bot/
         public ActionResult Index()
         {
-            return View();
+            List<BotModel> bots;
+            using (var botContext = new ApplicationDbContext())
+            {
+                bots = botContext.Bots.Include(x => x.Uploader).ToList();
+            }
+            return View(bots);
         }
 
         public ActionResult Create()

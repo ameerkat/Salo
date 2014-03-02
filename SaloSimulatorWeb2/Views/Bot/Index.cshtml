@@ -6,6 +6,11 @@
 
 <h2>Index</h2>
 
+@if (ViewBag.Message != null)
+{
+    <p>@ViewBag.Message</p>
+}
+
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
