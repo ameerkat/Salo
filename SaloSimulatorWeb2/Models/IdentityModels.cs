@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using System.Data.Entity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace SaloSimulatorWeb2.Models
 {
@@ -13,5 +14,7 @@ namespace SaloSimulatorWeb2.Models
             : base("DefaultConnection")
         {
         }
+
+        public DbSet<BotModel> Bots { get; set; }
     }
 }
