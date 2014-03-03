@@ -15,9 +15,13 @@ Salo simulator has the beginnings of a web interface that allows players to crea
 Salo map generator generates maps similar to the maps in the online game which get used by the simulator below. Currently only random hex configurations are allowed. Some more work is required to get maps that are balanced, see distance/scale params in MapGenerator.cs. Random maps are generated in favor of a fixed map pool in order to prevent bots that overfit to the map. Map generator includes a console application that will probable be merged with the simulator application when a full fledged console application is created.
 ## TODO
 * Refactor the game simulator into seperate class (currently in Main() of Simulator project)
-* Refactor the actions to make more things client side, using game state
-	* Add whatever settings are required to game to get more calculations client side
-* Add game support to web interface
+* Refactor game simulator to use same models as actual server (no transformation at the end)
 * Move over actions from Web to Web2 and remove Web
+* Remove all actions that are readonly
+* Add validation to the server side and split out business logic to the client instead of making calls to check things
+* Add bot runner console application
+* Figure out way to paramatrize and tackle multi-language client side logic
+* Add game support to web interface
+* Remove bot running on the web interfaces, bots run in proc only using the command line runner
 * Add web based map viewer (pre-requisite to game log viewer)
-* Add game log/history viewer
+* Add game log/history viewer (web based)
