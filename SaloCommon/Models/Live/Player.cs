@@ -1,88 +1,113 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
+using Newtonsoft.Json;
 
 namespace Salo.Live.Models
 {
     /// <summary>
     /// TODO Check this!
     /// </summary>
-    public class Research
+    public static class Research
     {
-        public const string weapons = "weapons";
-        public const string banking = "banking";
-        public const string propulsion = "propulsion";
-        public const string terraforming = "terraforming";
-        public const string research = "research";
-        public const string scanning = "scanning";
-        public const string manufacturing = "manufacturing";
+        public const string Weapons = "weapons";
+        public const string Banking = "banking";
+        public const string Propulsion = "propulsion";
+        public const string Terraforming = "terraforming";
+        public const string Experimentation = "research";
+        public const string Scanning = "scanning";
+        public const string Manufacturing = "manufacturing";
     }
 
     public class Player
     {
-        public int total_industry { get; set; }
-        public string researching { get; set; }
-        public int total_science { get; set; }
+        [JsonProperty("total_industry")]
+        public int TotalIndustry { get; set; }
+
+        [JsonProperty("researching")]
+        public string Researching { get; set; }
+
+        [JsonProperty("total_science")]
+        public int TotalScience { get; set; }
 
         /// <summary>
         /// Unique player ID
         /// </summary>
-        public int uid { get; set; }
+        [JsonProperty("Id")]
+        public int Id { get; set; }
 
         /// <summary>
         /// Is the player an AI?
         /// </summary>
-        public bool ai { get; set; }
+        [JsonProperty("ai")]
+        public bool IsBot { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public int huid { get; set; }
 
         /// <summary>
         /// Total number of owned stars in galaxy
         /// </summary>
-        public int total_stars { get; set; }
+        [JsonProperty("total_stars")]
+        public int TotalStars { get; set; }
 
-        public int cash { get; set; }
+        [JsonProperty("cash")]
+        public int Cash { get; set; }
 
-        public int total_fleets { get; set; }
+        [JsonProperty("total_fleets")]
+        public int TotalFleets { get; set; }
 
         /// <summary>
         /// Total number of ships
         /// </summary>
-        public int total_strength { get; set; }
+        [JsonProperty("total_strength")]
+        public int TotalShips { get; set; }
 
         /// <summary>
         /// Displayed name of the player
         /// </summary>
-        public string alias { get; set; }
+        [JsonProperty("alias")]
+        public string Name { get; set; }
 
-        public Dictionary<string, Technology> tech { get; set; }
+        [JsonProperty("tech")]
+        public Dictionary<string, Technology> Technology { get; set; }
 
         /// <summary>
         /// Avatar ID
         /// </summary>
-        public int avatar { get; set; }
+        [JsonProperty("avatar")]
+        public int AvatarId { get; set; }
 
-        public bool conceded { get; set; }
+        [JsonProperty("conceded")]
+        public bool HasConceded { get; set; }
 
-        public string research_next { get; set; }
+        [JsonProperty("research_next")]
+        public string ResearchingNext { get; set; }
 
         /// <summary>
         /// Unsure where this gets used
         /// </summary>
-        public bool ready { get; set; }
+        [JsonProperty("ready")]
+        public bool IsReady { get; set; }
 
-        public int total_economy { get; set; }
+        [JsonProperty("total_economy")]
+        public int TotalEconomy { get; set; }
 
+        [Browsable(false)]
         public Dictionary<int, int> countdown_to_war { get; set; }
 
+        [Browsable(false)]
         public Dictionary<int, int> war { get; set; }
 
+        [Browsable(false)]
         public int missed_turns { get; set; }
 
         /// <summary>
         /// Renown
         /// </summary>
-        public int karma_to_give { get; set; }
+        [JsonProperty("karma_to_give")]
+        public int Reknown { get; set; }
     }
 }

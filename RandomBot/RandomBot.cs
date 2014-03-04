@@ -1,5 +1,5 @@
 ﻿using Salo;
-using Salo.Models;
+using Salo.Live.Models;
 using System;
 using System.Linq;
 
@@ -9,28 +9,32 @@ namespace RandomBot
     [BotDescription("Randomly selects a strategy (econ, war, science) for each production cycle.")]
     public class RandomBot : ISaloBot
     {
+        [BotParameter("Ballsiness")]
         const double BALLSINESS = 0.1;
 
         private static Random rnd = new Random();
         protected Player _player;
         protected IActionHandler _actionHandler;
+        protected Configuration _configuration;
 
         public Player Me { get { return _player; } }
         public IActionHandler Action { get { return _actionHandler; } }
+        public Configuration Configuration { get { return _configuration; } }
 
         public RandomBot(){}
 
-        public void Initialize(Player player, IActionHandler actionHandler){
+        public void Initialize(Player player, Configuration configuration, IActionHandler actionHandler){
             _player = player;
             _actionHandler = actionHandler;
+            _configuration = configuration;
         }
 
-        public void Run(Game game)
+        public void Run(Report game)
         {
-            if (game.ElapsedTicks % game.ProductionRate == 0)
+            if (game.CurrentTick % Configuration.GetSettingAsInt(Configuration.ConfigurationKeys.ProductionRate) == 0)
             {
                 var strat = rnd.Next(0, 3);
-                var myStars = game.Stars.Where(x => x.Owner == Me);
+                var myStars = game.Stars.Where(x => x.Value.PlayerId == Me.Id);
                 Star star = null;
                 int upgradeCost = 0;
 

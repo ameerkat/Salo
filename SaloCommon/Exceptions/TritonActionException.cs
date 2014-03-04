@@ -9,6 +9,11 @@ namespace Salo
         public TritonActionException(string message) : base(message){}
     }
 
+    public class InsufficientPlayerPermissionsException : TritonActionException
+    {
+        
+    }
+
     public class InsufficientShipsException : TritonActionException
     {
 

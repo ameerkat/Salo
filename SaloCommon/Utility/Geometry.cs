@@ -18,7 +18,7 @@ namespace Salo.Utility
             return CalculateEuclideanDistance(star1.x, star2.x, star1.y, star2.y);
         }
 
-        public static double DistanceTo(this Salo.Models.Star origin, Salo.Models.Star star)
+        public static double DistanceTo(this Salo.Live.Models.Star origin, Salo.Live.Models.Star star)
         {
             return CalculateEuclideanDistance(origin, star);
         }

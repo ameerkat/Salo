@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace Salo.Live.Models
 {
@@ -11,31 +8,37 @@ namespace Salo.Live.Models
         /// <summary>
         /// Current tech level
         /// </summary>
-        public int level { get; set; }
+        [JsonProperty("level")]
+        public int Level { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public double sv { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public double value { get; set; }
 
         /// <summary>
         /// Current research added to this
         /// </summary>
-        public int research { get; set; }
+        [JsonProperty("research")]
+        public int Amount { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public double bv { get; set; }
 
         /// <summary>
         /// All 144, perhaps base required research
         /// </summary>
-        public int brr { get; set; }
+        [JsonProperty("brr")]
+        public int BaseRequiredResearch { get; set; }
     }
 }

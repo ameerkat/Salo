@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
 
 namespace Salo.Live.Models
 {
     public class Request
     {
-        public class OrderType
+        public static class OrderType
         {
             public const string FullUniverseReport = "full_universe_report";
         }
 
-        public string type { get; set; }
-        public string order { get; set; }
-        public int version { get; set; }
-        public string game_number { get; set; }
+        [JsonProperty("type")]
+        public string RequestType { get; set; }
+        
+        [JsonProperty("order")]
+        public string Order { get; set; }
+
+        [JsonProperty("version")]
+        public int Version { get; set; }
+
+        [JsonProperty("game_number")]
+        public string GameId { get; set; }
     }
 }
