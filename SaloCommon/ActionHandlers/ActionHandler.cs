@@ -1,4 +1,5 @@
-﻿using Salo.Models;
+﻿using System;
+using Salo.Live.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Salo.Utility;
@@ -7,47 +8,36 @@ namespace Salo
 {
     public class ActionHandler : IActionHandler
     {
-        /*
-         * Configuration
-         */
-        private const int DevelopmentCostEconomy = 2;
-        private const int DevelopmentCostIndustry = 2;
-        private const int DevelopmentCostScience = 2;
-        private const double BaseVisibilityRange = 0.75;
-        private const double ScanningMultiplier = 0.1;
-        private const double BaseFleetRange = 1;
-        private const double PropulsionMultiplier = 0.15;
-        private const int FleetBaseCost = 25;
+        protected State _state;
+        protected Configuration _configuration;
+        protected readonly int PlayerId;
+        public State State { get { return _state; } }
+        public Configuration Configuration { get { return _configuration; } }
+        public ActionHandler(State state, Configuration configuration, int playerId)
+        {
+            _state = state;
+            _configuration = configuration;
+            PlayerId = playerId;
+        }
 
         private static int TrueResources(Star star){
             return star.Resources + (star.Owner.Tech.Levels[Technologies.Terraforming] * 5);
         }
 
-        public int UpgradeCost(Star star, UpgradeType upgradeType){
-            switch(upgradeType){
-                case UpgradeType.Economy:
-                    return (int)(2.5 * DevelopmentCostEconomy * (star.Economy + 1) / (TrueResources(star) / 100.0));
-                case UpgradeType.Industry:
-                    return (int)(5 * DevelopmentCostIndustry * (star.Industry + 1) / (TrueResources(star) / 100.0));
-                case UpgradeType.Science:
-                    return (int)(20 * DevelopmentCostScience * (star.Science + 1) / (TrueResources(star) / 100.0));
-                case UpgradeType.WarpGate:
-                    return (int)(100 / (TrueResources(star) / 100.0));
-                default:
-                    return 0;
-            }
-        }
-
-        public int FleetCost { get { return FleetBaseCost; } }
-
-        public void Upgrade(Star star, UpgradeType upgradeType)
+        public void Upgrade(int starId, string upgrade)
         {
-            if (star.WarpGate && upgradeType == UpgradeType.WarpGate)
+            var star = State.Stars[starId];
+            if (this.PlayerId != star.PlayerId)
+            {
+                throw new InsufficientPlayerPermissionsException();
+            }
+
+            if (star.WarpGate == 1 && String.Compare(upgrade, Star.Upgrade.WarpGate, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 return;
             }
 
-            var upgradeCost = UpgradeCost(star, upgradeType);
+            var upgradeCost = StateUtility.UpgradeCost(star, upgradeType);
             if (star.Owner.Cash >= upgradeCost)
             {
                 star.Owner.Cash -= upgradeCost;

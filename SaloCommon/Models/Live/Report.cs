@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace Salo.Live.Models
 {
@@ -11,97 +9,126 @@ namespace Salo.Live.Models
     /// </summary>
     public class Report
     {
+        public Report(State state, Configuration configuration, Player player)
+        {
+            
+        }
+
         /// <summary>
         /// Is the current player an administrator for the game
         /// </summary>
-        public bool admin { get; set; }
+        [JsonProperty("admin")]
+        public bool IsAdministrator { get; set; }
 
         /// <summary>
-        /// Fleet speed in units per ?
+        /// Fleet speed in units per tick
         /// </summary>
-        public double fleet_speed { get; set; }
+        [JsonProperty("fleet_speed")]
+        public double FleetSpeed { get; set; }
 
-        public Dictionary<int, Fleet> fleets { get; set; }
+        [JsonProperty("fleets")]
+        public Dictionary<int, Fleet> Fleets { get; set; }
 
-        public bool paused { get; set; }
+        [JsonProperty("paused")]
+        public bool IsPaused { get; set; }
 
+        [Browsable(false)]
         public int productions { get; set; }
 
+        [Browsable(false)]
         public double tick_fragment { get; set; }
 
         /// <summary>
         /// Time in epoch
         /// </summary>
-        public long now { get; set; }
+        [JsonProperty("now")]
+        public long UnixTimestampNow { get; set; }
 
         /// <summary>
         /// Minutes per tick
         /// </summary>
-        public int tick_rate { get; set; }
+        [JsonProperty("tick_rate")]
+        public int TickRate { get; set; }
 
         /// <summary>
         /// Hours per production
         /// </summary>
-        public int production_rate { get; set; }
+        [JsonProperty("production_rate")]
+        public int ProductionRate { get; set; }
 
-        public Dictionary<int, Star> stars { get; set; }
+        [JsonProperty("stars")]
+        public Dictionary<int, Star> Stars { get; set; }
 
         /// <summary>
         /// Stars required for victory
         /// </summary>
-        public int stars_for_victory { get; set; }
+        [JsonProperty("stars_for_victory")]
+        public int StarsForVictory { get; set; }
 
-        public bool game_over { get; set; }
+        [JsonProperty("game_over")]
+        public bool IsOver { get; set; }
 
-        public bool started { get; set; }
+        [JsonProperty("started")]
+        public bool IsStarted { get; set; }
 
         /// <summary>
         /// Epoch time of game start
         /// </summary>
-        public long start_time { get; set; }
+        [JsonProperty("start_time")]
+        public long UnixTimestampStarted { get; set; }
 
         /// <summary>
         /// Total number of stars in the game
         /// </summary>
-        public int total_stars { get; set; }
+        [JsonProperty("total_stars")]
+        public int TotalStars { get; set; }
 
         /// <summary>
         /// Current production cycle (incremented every production_rate hours)
         /// </summary>
-        public int production_counter { get; set; }
+        [JsonProperty("production_counter")]
+        public int CurrentProductionCounter { get; set; }
 
         /// <summary>
         /// Current tick in the game (I think this is hours (tick_rate) but unsure)
         /// </summary>
-        public int tick { get; set; }
+        [JsonProperty("tick")]
+        public int CurrentTick { get; set; }
 
         /// <summary>
         /// Cost per level of trading research
         /// </summary>
-        public int trade_cost { get; set; }
+        [JsonProperty("trade_cost")]
+        public int TradeCostPerLevel { get; set; }
 
         /// <summary>
         /// Name of the game
         /// </summary>
-        public string name { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
         /// <summary>
         /// Unique ID of the player requesting the report
         /// </summary>
-        public int player_uid { get; set; }
+        [JsonProperty("player_uid")]
+        public int PlayerId { get; set; }
 
         /// <summary>
         /// Whether or not the game is turn based
         /// </summary>
-        public bool turn_based { get; set; }
+        [JsonProperty("turn_based")]
+        public bool IsTurnBased { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public int war { get; set; }
 
-        public Dictionary<int, Player> players { get; set; }
+        [JsonProperty("players")]
+        public Dictionary<int, Player> Players { get; set; }
 
-        public int turn_based_time_out { get; set; }
+        [JsonProperty("turn_based_time_out")]
+        public int TurnBasedTimeOut { get; set; }
     }
 }

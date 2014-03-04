@@ -1,81 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 
 namespace Salo.Live.Models
 {
     public class Star
     {
+        public static class Upgrade
+        {
+            public const string WarpGate = "warpgate";
+            public const string Economy = "economy";
+            public const string Industry = "industry";
+            public const string Science = "science";
+        }
+
         /// <summary>
         /// Unique Star ID
         /// </summary>
-        public int uid { get; set; }
+        [JsonProperty("uid")]
+        public int Id { get; set; }
 
         /// <summary>
         /// Name of the star
         /// </summary>
-        public string n { get; set; }
+        [JsonProperty("n")]
+        public string Name { get; set; }
 
         /// <summary>
         /// Player Unique ID of the owner of the star
         /// </summary>
-        public string puid { get; set; }
+        [JsonProperty("puid")]
+        public int PlayerId { get; set; }
 
         /// <summary>
         /// Is the star Visible
         /// </summary>
-        public bool v { get; set; }
+        [JsonProperty("v")]
+        public bool IsVisible { get; set; }
 
         /// <summary>
         /// Star's Y Position
         /// </summary>
-        public int y { get; set; }
+        [JsonProperty("y")]
+        public double Y { get; set; }
 
         /// <summary>
         /// Star's X Position
         /// </summary>
-        public int x { get; set; }
+        [JsonProperty("x")]
+        public double X { get; set; }
 
         /// <summary>
         /// Unsure
         /// </summary>
+        [Browsable(false)]
         public int c { get; set; }
 
         /// <summary>
         /// Economy
         /// </summary>
-        public int e { get; set; }
+        [JsonProperty("e")]
+        public int Economy { get; set; }
 
         /// <summary>
         /// Industry
         /// </summary>
-        public int i { get; set; }
+        [JsonProperty("i")]
+        public int Industry { get; set; }
 
         /// <summary>
         /// Science
         /// </summary>
-        public int s { get; set; }
+        [JsonProperty("s")]
+        public int Science { get; set; }
 
         /// <summary>
         /// Total Resources
         /// </summary>
-        public int r { get; set; }
+        [JsonProperty("r")]
+        public int TotalResources { get; set; }
 
         /// <summary>
-        /// Unsure
+        /// Warp Gate
         /// </summary>
-        public int ga { get; set; }
+        [JsonProperty("ga")]
+        public int WarpGate { get; set; }
 
         /// <summary>
         /// Natural Resources
         /// </summary>
-        public int nr { get; set; }
+        [JsonProperty("nr")]
+        public int NaturalResources { get; set; }
 
         /// <summary>
         /// Number of ships on the star
         /// </summary>
-        public int st { get; set; }
+        [JsonProperty("st")]
+        public int Ships { get; set; }
+        
+        /*
+         * Simulator Use Only
+         */
+
+        /// <summary>
+        /// Used internally for tracking ship generation
+        /// </summary>
+        [Browsable(false)]
+        // [ScriptIgnore]
+        public double ShipsFractional { get; set; }
     }
 }
