@@ -48,21 +48,15 @@
   <ItemGroup>
     <Compile Include="ActionHandlers\ActionHandler.cs" />
     <Compile Include="ActionHandlers\IActionHandler.cs" />
+    <Compile Include="ActionHandlers\IStatefulActionHandler.cs" />
     <Compile Include="Attributes\BotDescription.cs" />
     <Compile Include="Attributes\BotName.cs" />
-    <Compile Include="Models\Enumerations.cs" />
+    <Compile Include="Attributes\BotParameter.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Models\Live\Internal\Configuration.cs" />
     <Compile Include="Models\Live\Internal\State.cs" />
-    <Compile Include="Utility\Geometry.cs" />
-    <Compile Include="Models\Simulator\Fleet.cs" />
-    <Compile Include="Models\Simulator\Game.cs" />
-    <Compile Include="Models\Simulator\Map\Map.cs" />
-    <Compile Include="Models\Simulator\Map\MapStar.cs" />
-    <Compile Include="Models\Simulator\Player.cs" />
-    <Compile Include="Models\Simulator\Star.cs" />
-    <Compile Include="Models\Simulator\Technology.cs" />
+    <Compile Include="StateUtility.cs" />
     <Compile Include="ISaloBot.cs" />
-    <Compile Include="ActionHandlers\LiveWebActionHandler.cs" />
     <Compile Include="Models\Live\Event.cs" />
     <Compile Include="Models\Live\Fleet.cs" />
     <Compile Include="Models\Live\Player.cs" />
@@ -70,7 +64,7 @@
     <Compile Include="Models\Live\Request.cs" />
     <Compile Include="Models\Live\Star.cs" />
     <Compile Include="Models\Live\Technology.cs" />
-    <Compile Include="Utility\NameGenerator.cs" />
+    <Compile Include="NameGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\TritonActionException.cs" />
     <Compile Include="ActionHandlers\SimulatorWebActionHandler.cs" />

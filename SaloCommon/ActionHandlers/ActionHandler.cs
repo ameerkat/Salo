@@ -1,18 +1,25 @@
-﻿using System;
-using Salo.Live.Models;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Salo.Live.Models;
 using Salo.Utility;
+using System;
+using System.Linq;
 
 namespace Salo
 {
-    public class ActionHandler : IActionHandler
+    public class ActionHandler : IStatefulActionHandler
     {
         protected State _state;
         protected Configuration _configuration;
+        protected StateUtility _stateUtility;
         protected readonly int PlayerId;
         public State State { get { return _state; } }
         public Configuration Configuration { get { return _configuration; } }
+        public Player Player { get { return State.Players[PlayerId]; } }
+
+        public StateUtility StateUtility
+        {
+            get { return _stateUtility; }
+        }
+
         public ActionHandler(State state, Configuration configuration, int playerId)
         {
             _state = state;
@@ -20,8 +27,10 @@ namespace Salo
             PlayerId = playerId;
         }
 
-        private static int TrueResources(Star star){
-            return star.Resources + (star.Owner.Tech.Levels[Technologies.Terraforming] * 5);
+        public void UpdateState(State state)
+        {
+            this._state = state;
+            this._stateUtility = new StateUtility(state, Configuration, Player);
         }
 
         public void Upgrade(int starId, string upgrade)
@@ -37,23 +46,23 @@ namespace Salo
                 return;
             }
 
-            var upgradeCost = StateUtility.UpgradeCost(star, upgradeType);
-            if (star.Owner.Cash >= upgradeCost)
+            var upgradeCost = StateUtility.CalculateUpgradeCost(star, upgrade);
+            if (State.Player(star).Cash >= upgradeCost)
             {
-                star.Owner.Cash -= upgradeCost;
-                switch (upgradeType)
+                State.Player(star).Cash -= upgradeCost;
+                switch (upgrade)
                 {
-                    case UpgradeType.Economy:
+                    case Star.Upgrade.Economy:
                         star.Economy += 1;
                         break;
-                    case UpgradeType.Industry:
+                    case Star.Upgrade.Industry:
                         star.Industry += 1;
                         break;
-                    case UpgradeType.Science:
+                    case Star.Upgrade.Science:
                         star.Science += 1;
                         break;
-                    case UpgradeType.WarpGate:
-                        star.WarpGate = true;
+                    case Star.Upgrade.WarpGate:
+                        star.WarpGate = 1;
                         break;
                     default:
                         return;
@@ -61,59 +70,17 @@ namespace Salo
             }
         }
 
-        public bool IsVisible(IEnumerable<Star> stars, Star star, Player player)
+        public void BuildFleet(int starId)
         {
-            // TODO Not sure what the actual values are here
-            var visibilityRange = BaseVisibilityRange + player.Tech.Levels[Technologies.Scanning] * ScanningMultiplier;
-            foreach(var playerStar in stars.Where(x => x.Owner == player)){
-                if(playerStar.DistanceTo(star) <= visibilityRange){
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public IEnumerable<Star> GetVisibleStars(IEnumerable<Star> stars, Player player)
-        {
-            return stars.Where(x => IsVisible(stars, x, player));
-        }
-
-        private double GetFleetRange(Player player)
-        {
-            return BaseFleetRange + player.Tech.Levels[Technologies.Range] * PropulsionMultiplier;
-        }
-
-        public bool IsReachableByPlayer(IEnumerable<Star> stars, Star star, Player player)
-        {
-            var fleetRange = GetFleetRange(player);
-            foreach (var playerStar in stars.Where(x => x.Owner == player))
+            var star = State.Stars[starId];
+            var fleetCost = Configuration.GetSettingAsInt(Configuration.ConfigurationKeys.FleetBaseCost);
+            if (State.Player(star).Cash >= fleetCost)
             {
-                if (playerStar.DistanceTo(star) <= fleetRange)
+                this.State.Player(star).Cash -= fleetCost;
+                var id = this.State.GetNextId(typeof (Fleet));
+                this.State.Fleets.Add(id, new Fleet()
                 {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public IEnumerable<Star> GetReachableStars(IEnumerable<Star> stars, Player player)
-        {
-            return stars.Where(x => IsReachableByPlayer(stars, x, player));
-        }
-
-        public bool IsReachable(IEnumerable<Star> stars, Star origin, Star destination)
-        {
-            return Geometry.CalculateEuclideanDistance(origin, destination) <= GetFleetRange(origin.Owner);
-        }
-
-        public void BuildFleet(Game game, Star star)
-        {
-            if (star.Owner.Cash >= FleetCost)
-            {
-                star.Owner.Cash -= FleetCost;
-                game.Fleets.Add(new Fleet()
-                {
-                    Id = game.fleetId++,
+                    Id = id,
                     Name = NameGenerator.GenerateFleetName(star),
                     OriginStar = null,
                     DestinationStar = null,
@@ -122,21 +89,22 @@ namespace Salo
                     DistanceToDestination = 0,
                     Ships = 0, // ships get transfered on movement
                     ToProcess = false,
-                    Owner = star.Owner
+                    PlayerId = State.Player(star).Id
                 });
             }
         }
 
-        public void Move(Game game, Star originStar, Star destinationStar, int ships)
+        public void Move(int originStarId, int destinationStarId, int ships)
         {
-            var useFleet = game.Fleets.FirstOrDefault(x => x.CurrentStar != null && x.CurrentStar == originStar);
+            var originStar = State.Stars[originStarId];
+            var destinationStar = State.Stars[destinationStarId];
+            var useFleet = State.Fleets.Values.FirstOrDefault(x => x.CurrentStar != null && x.CurrentStar == originStar);
             if (useFleet == null)
             {
                 throw new FleetRequiredToMoveException();
             }
 
-            var distance = Geometry.CalculateEuclideanDistance(originStar, destinationStar);
-            if (distance > GetFleetRange(originStar.Owner))
+            if (!this.StateUtility.CanReach(originStar, destinationStar))
             {
                 throw new InsufficientRangeException();
             }
@@ -152,52 +120,17 @@ namespace Salo
             useFleet.DestinationStar = destinationStar;
             useFleet.CurrentStar = null;
             useFleet.InTransit = true;
-            useFleet.DistanceToDestination = distance;
+            useFleet.DistanceToDestination = Geometry.CalculateEuclideanDistance(originStar, destinationStar);
         }
 
-        public void MoveAll(Game game, Star originStar, Star destinationStar)
+        public void SetCurrentResearch(string research)
         {
-            Move(game, originStar, destinationStar, (int)originStar.Ships);
+            Player.Researching = research;
         }
 
-        public void SetCurrentResearch(Player player, Technologies tech)
+        public void SetNextResearch(string research)
         {
-            player.CurrentlyResearching = tech;
-        }
-
-        public void SetNextResearch(Player player, Technologies tech)
-        {
-            player.NextResearching = tech;
-        }
-
-        public Star GetCheapestUpgradeStar(IEnumerable<Star> stars, Player player, UpgradeType upgrade)
-        {
-            var investmentCosts = stars.Where(x => x.Owner == player).Select(x => new KeyValuePair<Star, int>(x, UpgradeCost(x, upgrade)));
-            var minInvestmentCost = investmentCosts.Min(x => x.Value);
-            return investmentCosts.First(x => x.Value == minInvestmentCost).Key;
-        }
-
-
-        public int CalculateAttackSuccess(Game game, Star originStar, Star destinationStar)
-        {
-            var attackerWeapons = originStar.Owner.Tech.Levels[Technologies.Weapons];
-            var defenderWeapons = destinationStar.Owner.Tech.Levels[Technologies.Weapons] + game.DefenderBonus;
-            int originShips = (int)originStar.Ships;
-            int destinationShips = (int)destinationStar.Ships;
-            while (originShips > 0 && destinationShips > 0)
-            {
-                // defenders go first
-                originShips -= defenderWeapons;
-                if (originShips > 0)
-                    destinationShips -= attackerWeapons;
-            }
-
-            return originShips;
-        }
-
-        public bool HasFleet(Game game, Star star)
-        {
-            return game.Fleets.Any(x => x.CurrentStar == star);
+            Player.ResearchingNext = research;
         }
     }
 }

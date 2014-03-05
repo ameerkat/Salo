@@ -11,7 +11,8 @@ namespace Salo.Live.Models
     {
         public Report(State state, Configuration configuration, Player player)
         {
-            
+            // have to calculate visibilty of stars
+            // have to merge configuration settings here
         }
 
         /// <summary>

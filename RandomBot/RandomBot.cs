@@ -16,10 +16,12 @@ namespace RandomBot
         protected Player _player;
         protected IActionHandler _actionHandler;
         protected Configuration _configuration;
+        protected StateUtility _stateUtility;
 
         public Player Me { get { return _player; } }
         public IActionHandler Action { get { return _actionHandler; } }
         public Configuration Configuration { get { return _configuration; } }
+        public StateUtility StateUtility { get { return _stateUtility; } }
 
         public RandomBot(){}
 
@@ -31,10 +33,12 @@ namespace RandomBot
 
         public void Run(Report game)
         {
+            // TODO figure out a better way to handle this
+            _stateUtility = new StateUtility(game, Configuration, Me);
+
             if (game.CurrentTick % Configuration.GetSettingAsInt(Configuration.ConfigurationKeys.ProductionRate) == 0)
             {
                 var strat = rnd.Next(0, 3);
-                var myStars = game.Stars.Where(x => x.Value.PlayerId == Me.Id);
                 Star star = null;
                 int upgradeCost = 0;
 
@@ -42,45 +46,45 @@ namespace RandomBot
                 {
                     case 0:
                         // economical
-                        Action.SetCurrentResearch(Me, Technologies.Banking);
-                        Action.SetNextResearch(Me, Technologies.Banking);
-                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Economy);
-                        upgradeCost = Action.UpgradeCost(star, UpgradeType.Economy);
+                        Action.SetCurrentResearch(Research.Banking);
+                        Action.SetNextResearch(Research.Banking);
+                        star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Economy);
+                        upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Economy);
                         while (Me.Cash >= upgradeCost)
                         {
-                            Action.Upgrade(star, UpgradeType.Economy);
-                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Economy);
-                            upgradeCost = Action.UpgradeCost(star, UpgradeType.Economy);
+                            Action.Upgrade(star.Id, Star.Upgrade.Economy);
+                            star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Economy);
+                            upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Economy);
                         }
                         break;
                     case 1:
                         // militaristic
-                        if (Me.CurrentlyResearching == Technologies.Weapons)
+                        if (Me.Researching == Research.Weapons)
                         {
-                            Action.SetNextResearch(Me, Technologies.Manufacturing);
+                            Action.SetNextResearch(Research.Manufacturing);
                         }
                         else
                         {
-                            Action.SetNextResearch(Me, Technologies.Weapons);
+                            Action.SetNextResearch(Research.Weapons);
                         }
 
                         // attack
-                        var starsInRange = Action.GetReachableStars(game.Stars, Me).Where(x => x.Owner != Me);
+                        var starsInRange = StateUtility.EnemyReachableFromAny();
                         foreach (var starInRange in starsInRange)
                         {
-                            var starsThatCanAttack = myStars.Where(x => Action.IsReachable(game.Stars, x, starInRange));
+                            var starsThatCanAttack = StateUtility.StarsThatCanReach(starInRange);
                             foreach (var starThatCanAttack in starsThatCanAttack)
                             {
                                 if (
-                                    (Action.IsVisible(game.Stars, starInRange, Me)
-                                    && Action.CalculateAttackSuccess(game, starThatCanAttack, starInRange) > 0)  // only calculate for stars we can see
+                                    (starInRange.IsVisible
+                                    && StateUtility.CalculateAttackSuccess(starThatCanAttack, starInRange) > 0)  // only calculate for stars we can see
                                     || rnd.NextDouble() >= (1 - BALLSINESS))
                                 {
-                                    if (!Action.HasFleet(game, starThatCanAttack))
+                                    if (!StateUtility.HasFleet(starThatCanAttack))
                                     {
-                                        if (Me.Cash >= Action.FleetCost)
+                                        if (Me.Cash >= Configuration.GetSettingAsInt(Configuration.ConfigurationKeys.FleetBaseCost))
                                         {
-                                            Action.BuildFleet(game, starThatCanAttack);
+                                            Action.BuildFleet(starThatCanAttack.Id);
                                         }
                                         else
                                         {
@@ -88,33 +92,33 @@ namespace RandomBot
                                         }
                                     }
 
-                                    Action.MoveAll(game, starThatCanAttack, starInRange);
+                                    Action.Move(starThatCanAttack.Id, starInRange.Id, starThatCanAttack.Ships);
                                     break;
                                 }
                             }
                         }
 
                         // spend remaining on upgrades
-                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Industry);
-                        upgradeCost = Action.UpgradeCost(star, UpgradeType.Industry);
+                        star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Industry);
+                        upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Industry);
                         while (Me.Cash >= upgradeCost)
                         {
-                            Action.Upgrade(star, UpgradeType.Industry);
-                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Industry);
-                            upgradeCost = Action.UpgradeCost(star, UpgradeType.Industry);
+                            Action.Upgrade(star.Id, Star.Upgrade.Industry);
+                            star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Industry);
+                            upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Industry);
                         }
                         break;
                     case 2:
                         // scientific
-                        Action.SetCurrentResearch(Me, Technologies.Experimentation);
-                        Action.SetNextResearch(Me, Technologies.Experimentation);
-                        star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Science);
-                        upgradeCost = Action.UpgradeCost(star, UpgradeType.Science);
+                        Action.SetCurrentResearch(Research.Experimentation);
+                        Action.SetNextResearch(Research.Experimentation);
+                        star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Science);
+                        upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Science);
                         while (Me.Cash >= upgradeCost)
                         {
-                            Action.Upgrade(star, UpgradeType.Science);
-                            star = Action.GetCheapestUpgradeStar(myStars, Me, UpgradeType.Science);
-                            upgradeCost = Action.UpgradeCost(star, UpgradeType.Science);
+                            Action.Upgrade(star.Id, Star.Upgrade.Science);
+                            star = StateUtility.GetCheapestUpgradeStar(Star.Upgrade.Science);
+                            upgradeCost = StateUtility.CalculateUpgradeCost(star, Star.Upgrade.Science);
                         }
                         break;
                     default:

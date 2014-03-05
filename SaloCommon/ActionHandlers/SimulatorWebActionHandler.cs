@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.Serialization.Json;
 using System.Web;
-using Salo.Models;
 
 namespace Salo
 {
@@ -13,12 +10,15 @@ namespace Salo
     {
         private string _endpoint;
         private string _gameId;
+        private string _playerId;
         public string Endpoint { get { return _endpoint; } }
         public string GameId { get { return _gameId; } }
-        public SimulatorWebActionHandler(string endpoint, string gameId)
+        public string PlayerId { get { return _playerId; } }
+        public SimulatorWebActionHandler(string endpoint, string gameId, string playerId)
         {
             _endpoint = endpoint;
             _gameId = gameId;
+            _playerId = playerId;
         }
 
         private string ToQueryString(NameValueCollection nvc)
@@ -76,129 +76,44 @@ namespace Salo
             System.Net.HttpWebResponse oResponse = (System.Net.HttpWebResponse) oRequest.GetResponse();
         }
 
-        public int UpgradeCost(Models.Star star, UpgradeType upgradeType)
+        public void Upgrade(int starId, string upgradeType)
         {
             NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
-            nvc.Add(UpgradeTypeParam, upgradeType.ToString());
-            return DoAction<int>("UpgradeCost", nvc);
-        }
-
-        public void Upgrade(Models.Star star, UpgradeType upgradeType)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
-            nvc.Add(UpgradeTypeParam, upgradeType.ToString());
+            nvc.Add(StarIdParam, starId.ToString());
+            nvc.Add(UpgradeTypeParam, upgradeType);
             DoAction("Upgrade", nvc);
         }
 
-        public bool IsVisible(IEnumerable<Models.Star> stars, Models.Star star, Models.Player player)
+        public void BuildFleet(int starId)
         {
             NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            return DoAction<bool>("IsVisible", nvc);
-        }
-
-        public IEnumerable<Models.Star> GetVisibleStars(IEnumerable<Models.Star> stars, Models.Player player)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            return DoAction<IEnumerable<Star>>("GetVisibleStars", nvc);
-        }
-
-        public bool IsReachableByPlayer(IEnumerable<Models.Star> stars, Models.Star star, Models.Player player)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            return DoAction<bool>("IsReachableByPlayer", nvc);
-        }
-
-        public IEnumerable<Models.Star> GetReachableStars(IEnumerable<Models.Star> stars, Models.Player player)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            return DoAction<IEnumerable<Star>>("GetReachableStars", nvc);
-        }
-
-        public bool IsReachable(IEnumerable<Models.Star> stars, Models.Star originStar, Models.Star destinationStar)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(OriginStarIdParam, originStar.Id.ToString());
-            nvc.Add(DestinationStarIdParam, destinationStar.Id.ToString());
-            return DoAction<bool>("IsReachable", nvc);
-        }
-
-        public void BuildFleet(Models.Game game, Models.Star star)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
+            nvc.Add(StarIdParam, starId.ToString());
             DoAction("BuildFleet", nvc);
         }
 
-        public void Move(Models.Game game, Models.Star originStar, Models.Star destinationStar, int ships)
+        public void Move(int originStarId, int destinationStarId, int ships)
         {
             NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(OriginStarIdParam, originStar.Id.ToString());
-            nvc.Add(DestinationStarIdParam, destinationStar.Id.ToString());
+            nvc.Add(OriginStarIdParam, originStarId.ToString());
+            nvc.Add(DestinationStarIdParam, destinationStarId.ToString());
             nvc.Add(ShipsParam, ships.ToString());
             DoAction("Move", nvc);
         }
 
-        public void MoveAll(Models.Game game, Models.Star originStar, Models.Star destinationStar)
+        public void SetCurrentResearch(string research)
         {
             NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(OriginStarIdParam, originStar.Id.ToString());
-            nvc.Add(DestinationStarIdParam, destinationStar.Id.ToString());
-            DoAction("MoveAll", nvc);
-        }
-
-        public void SetCurrentResearch(Models.Player player, Technologies tech)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            nvc.Add(TechnologyParam, tech.ToString());
+            nvc.Add(PlayerIdParam, PlayerId);
+            nvc.Add(TechnologyParam, research);
             DoAction("SetCurrentResearch", nvc);
         }
 
-        public void SetNextResearch(Models.Player player, Technologies tech)
+        public void SetNextResearch(string research)
         {
             NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            nvc.Add(TechnologyParam, tech.ToString());
+            nvc.Add(PlayerIdParam, PlayerId);
+            nvc.Add(TechnologyParam, research);
             DoAction("SetNextResearch", nvc);
-        }
-
-        public Models.Star GetCheapestUpgradeStar(IEnumerable<Models.Star> stars, Models.Player player, UpgradeType upgrade)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(PlayerIdParam, player.Id.ToString());
-            nvc.Add(UpgradeTypeParam, upgrade.ToString());
-            return DoAction<Star>("GetCheapestUpgradeStar", nvc);
-        }
-
-        public int CalculateAttackSuccess(Models.Game game, Models.Star originStar, Models.Star destinationStar)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(OriginStarIdParam, originStar.Id.ToString());
-            nvc.Add(DestinationStarIdParam, destinationStar.Id.ToString());
-            return DoAction<int>("CalculateAttackSuccess", nvc);
-        }
-
-        public bool HasFleet(Models.Game game, Models.Star star)
-        {
-            NameValueCollection nvc = new NameValueCollection();
-            nvc.Add(StarIdParam, star.Id.ToString());
-            return DoAction<bool>("HasFleet", nvc);
-        }
-
-        public int FleetCost
-        {
-            get
-            {
-                return DoAction<int>("FleetCost", null);
-            }
         }
     }
 }
