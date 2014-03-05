@@ -5,6 +5,11 @@ namespace Salo
 {
     public class Configuration
     {
+        public Configuration()
+        {
+            Settings = new Dictionary<string, string>();
+        }
+
         public Configuration Parent { get; set; }
         public Dictionary<string, string> Settings { get; set; }
 

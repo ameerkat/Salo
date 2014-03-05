@@ -95,12 +95,12 @@ namespace Salo
         /// <returns></returns>
         public IEnumerable<Star> StarsThatCanReach(Star star)
         {
-            return State.Stars.Where(s => State.Player(s.Value) == Player && CanReach(s.Value, star)).Select(x => x.Value);
+            return State.Stars.Where(s => s.Value.PlayerId == Player.Id && CanReach(s.Value, star)).Select(x => x.Value);
         }
 
         public IEnumerable<Star> EnemyReachableFromAny()
         {
-            return State.Stars.Where(x => State.Player(x.Value) != Player && StarsThatCanReach(x.Value).Any()).Select(x => x.Value);
+            return State.Stars.Where(x => x.Value.PlayerId != Player.Id && StarsThatCanReach(x.Value).Any()).Select(x => x.Value);
         }
 
         public Star GetCheapestUpgradeStar(string upgrade)

@@ -48,7 +48,7 @@
   <ItemGroup>
     <Compile Include="ActionHandlers\ActionHandler.cs" />
     <Compile Include="ActionHandlers\IActionHandler.cs" />
-    <Compile Include="ActionHandlers\IStatefulActionHandler.cs" />
+    <Compile Include="ActionHandlers\IReportableActionHandler.cs" />
     <Compile Include="ActionLoggers\ActionLogger.cs" />
     <Compile Include="ActionLoggers\IActionLogger.cs" />
     <Compile Include="Attributes\BotDescription.cs" />

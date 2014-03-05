@@ -12,6 +12,7 @@ namespace Salo.SaloSimulator
             FileIniDataParser parser = new FileIniDataParser();
             IniData data = parser.ReadFile("Configuration.Default.ini");
             Configuration configuration = new Configuration();
+            configuration.Settings = new Dictionary<string, string>();
             foreach (var section in data.Sections)
             {
                 foreach (var key in section.Keys)
@@ -35,10 +36,12 @@ namespace Salo.SaloSimulator
             }
 
             IActionLogger actionLogger = new ActionLogger();
-            var game = SimulatorCore.Initialize(configuration, bots, actionLogger);
+            SimulatorCore simulatorCore = new SimulatorCore();
+            var game = simulatorCore.Initialize(configuration, bots, actionLogger);
             while (!game.IsOver)
             {
-                SimulatorCore.ProcessTick(game, configuration, bots);
+                simulatorCore.ProcessTick(game, configuration, bots);
+                Console.WriteLine("Tick {0}", game.CurrentTick);
             }
 
             var winner = SimulatorCore.GetWinner(game, configuration);

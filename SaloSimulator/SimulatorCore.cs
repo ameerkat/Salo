@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Salo.SaloSimulator
 {
-    public static class SimulatorCore
+    public class SimulatorCore
     {
         private static Random rnd = new Random();
+        private List<IReportableActionHandler> actionHandlers { get; set; }
 
         /// <summary>
         /// Returns null if no winner, returns Player if game is won
@@ -98,7 +96,7 @@ namespace Salo.SaloSimulator
             return String.Format("Star {0}", seed);
         }
 
-        public static State Initialize(Configuration configuration, IList<ISaloBot> bots, IActionLogger logger, State map = null )
+        public State Initialize(Configuration configuration, IList<ISaloBot> bots, IActionLogger logger, State map = null )
         {
             State game = new State();
             game.StartTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -207,17 +205,20 @@ namespace Salo.SaloSimulator
                 }
             }
 
+            actionHandlers = new List<IReportableActionHandler>();
             // Initialize bots
             for (int i = 0; i < bots.Count(); ++i)
             {
                 var bot = bots[i];
-                bot.Initialize(game.Players[i], configuration, new ActionHandler(game, configuration, i, logger));
+                var actionHandler = new ActionHandler(game, configuration, i, logger);
+                actionHandlers.Add(actionHandler);
+                bot.Initialize(game.Players[i], configuration, actionHandler);
             }
 
             return game;
         }
 
-        public static void ProcessTick(State state, Configuration configuration, IList<ISaloBot> bots)
+        public void ProcessTick(State state, Configuration configuration, IList<ISaloBot> bots)
         {
             /*
              * Overall Approach
@@ -277,12 +278,12 @@ namespace Salo.SaloSimulator
                 }
             }
 
-            // Calculate Industry
+            // Calculate Industry for owned stars
             // Stars produce Y*(X+5) every production # of ticks
             // X is tech level, Y is industry
             // We just calculate each tick and store partial ships
             // Round down when calculating for Combat
-            foreach (var star in state.Stars)
+            foreach (var star in state.Stars.Where(x => x.Value.PlayerId != -1))
             {
                 double incrementValuePerProduction = 
                     star.Value.Industry *
@@ -423,7 +424,9 @@ namespace Salo.SaloSimulator
             for (int i = 0; i < bots.Count(); i++)
             {
                 ISaloBot bot = bots[i];
-                bot.Run(state.ToReport(configuration, state.Players[i]));
+                var report = state.ToReport(configuration, state.Players[i]);
+                actionHandlers[i].SetReport(report);
+                bot.Run(report);
             }
 
             // * Sleep until tick is complete

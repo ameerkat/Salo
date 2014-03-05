@@ -28,4 +28,9 @@ namespace Salo
     {
 
     }
+
+    public class OutOfSyncException : TritonActionException
+    {
+        
+    }
 }

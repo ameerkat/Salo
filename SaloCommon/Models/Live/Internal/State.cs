@@ -52,6 +52,10 @@ namespace Salo
         public Report ToReport(Configuration configuration, Player player)
         {
             var report = new Report();
+            report.Stars = new Dictionary<int, Star>();
+            report.Fleets = new Dictionary<int, Fleet>();
+            report.Players = new Dictionary<int, Player>();
+
             report.CurrentProductionCounter = this.CurrentTick/
                                               configuration.GetSettingAsInt(
                                                   Configuration.ConfigurationKeys.ProductionRate);

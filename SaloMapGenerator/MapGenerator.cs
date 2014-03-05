@@ -78,6 +78,7 @@ namespace Salo
              * (random 60 degree angle because of RandomHex galaxy type)
              */
             State state = new State();
+            state.Stars = new Dictionary<int, Star>();
 
             var clusters = new List<List<Star>>();
 
@@ -148,10 +149,9 @@ namespace Salo
                         Y = y,
                         IsHomeStar = false,
                         IsStartingStar = false,
-                        PlayerId = i,
+                        PlayerId = -1,
                         NaturalResources = resource,
-                        // all players start with level 1 terraforming, todo make this more dynamic
-                        TotalResources = configuration.GetSettingAsInt(Configuration.ConfigurationKeys.TerraformingResourceCoefficient) + resource
+                        TotalResources = resource
                     };
                     Cluster.Add(Star);
                 }

@@ -5,13 +5,16 @@ using System.Linq;
 
 namespace Salo
 {
-    public class ActionHandler : IStatefulActionHandler
+    public class ActionHandler : IReportableActionHandler
     {
         protected State _state;
         protected Configuration _configuration;
         protected StateUtility _stateUtility;
         protected IActionLogger _actionLogger;
         protected readonly int PlayerId;
+        protected Report Report { get; set; }
+
+
         public State State { get { return _state; } }
         public Configuration Configuration { get { return _configuration; } }
         public Player Player { get { return State.Players[PlayerId]; } }
@@ -32,12 +35,12 @@ namespace Salo
             _configuration = configuration;
             PlayerId = playerId;
             _actionLogger = actionLogger;
+            _stateUtility = new StateUtility(state, configuration, Player);
         }
 
-        public void UpdateState(State state)
+        public void SetReport(Report report)
         {
-            this._state = state;
-            this._stateUtility = new StateUtility(state, Configuration, Player);
+            Report = report;
         }
 
         public void Upgrade(int starId, string upgrade)
@@ -69,19 +72,24 @@ namespace Salo
             if (State.Player(star).Cash >= upgradeCost)
             {
                 State.Player(star).Cash -= upgradeCost;
+                Report.Players[star.PlayerId].Cash -= upgradeCost; // mirror the action to the report
                 switch (upgrade)
                 {
                     case Star.Upgrade.Economy:
                         star.Economy += 1;
+                        Report.Stars[star.Id].Economy +=1;
                         break;
                     case Star.Upgrade.Industry:
                         star.Industry += 1;
+                        Report.Stars[star.Id].Industry += 1;
                         break;
                     case Star.Upgrade.Science:
                         star.Science += 1;
+                        Report.Stars[star.Id].Science += 1;
                         break;
                     case Star.Upgrade.WarpGate:
                         star.WarpGate = 1;
+                        Report.Stars[star.Id].WarpGate += 1;
                         break;
                     default:
                         return;
@@ -107,17 +115,35 @@ namespace Salo
             if (State.Player(star).Cash >= fleetCost)
             {
                 this.State.Player(star).Cash -= fleetCost;
+                this.Report.Players[star.PlayerId].Cash -= fleetCost;
+
                 var id = this.State.GetNextId(typeof (Fleet));
+                var fleetName = NameGenerator.GenerateFleetName(star);
                 this.State.Fleets.Add(id, new Fleet()
                 {
                     Id = id,
-                    Name = NameGenerator.GenerateFleetName(star),
+                    Name = fleetName,
                     OriginStar = null,
                     DestinationStar = null,
                     CurrentStar = star,
                     InTransit = false,
                     DistanceToDestination = 0,
                     Ships = 0, // ships get transfered on movement
+                    ToProcess = false,
+                    PlayerId = State.Player(star).Id
+                });
+
+                // duplicate to report
+                this.Report.Fleets.Add(id, new Fleet()
+                {
+                    Id = id,
+                    Name = fleetName,
+                    OriginStar = null,
+                    DestinationStar = null,
+                    CurrentStar = star,
+                    InTransit = false,
+                    DistanceToDestination = 0,
+                    Ships = 0,
                     ToProcess = false,
                     PlayerId = State.Player(star).Id
                 });
@@ -140,11 +166,19 @@ namespace Salo
             });
 
             var originStar = State.Stars[originStarId];
+            var originStarReport = Report.Stars[originStarId];
             var destinationStar = State.Stars[destinationStarId];
+            var destinationStarReport = Report.Stars[destinationStarId];
             var useFleet = State.Fleets.Values.FirstOrDefault(x => x.CurrentStar != null && x.CurrentStar == originStar);
+            var useFleetReport = Report.Fleets.Values.FirstOrDefault(x => x.CurrentStar != null && x.CurrentStar == originStar);
             if (useFleet == null)
             {
                 throw new FleetRequiredToMoveException();
+            }
+
+            if (useFleetReport == null)
+            {
+                throw new OutOfSyncException();
             }
 
             if (!this.StateUtility.CanReach(originStar, destinationStar))
@@ -164,6 +198,15 @@ namespace Salo
             useFleet.CurrentStar = null;
             useFleet.InTransit = true;
             useFleet.DistanceToDestination = Geometry.CalculateEuclideanDistance(originStar, destinationStar);
+
+            // Synchronize to report
+            useFleetReport.Ships += ships;
+            originStarReport.Ships -= ships;
+            useFleetReport.OriginStar = originStarReport;
+            useFleetReport.DestinationStar = destinationStarReport;
+            useFleetReport.CurrentStar = null;
+            useFleetReport.InTransit = true;
+            useFleetReport.DistanceToDestination = useFleet.DistanceToDestination;
         }
 
         public void SetCurrentResearch(string research)
@@ -180,6 +223,7 @@ namespace Salo
             });
 
             Player.Researching = research;
+            Report.Players[Report.PlayerId].Researching = research;
         }
 
         public void SetNextResearch(string research)
@@ -196,6 +240,7 @@ namespace Salo
             });
 
             Player.ResearchingNext = research;
+            Report.Players[Report.PlayerId].ResearchingNext = research;
         }
     }
 }
