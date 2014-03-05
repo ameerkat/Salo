@@ -1,6 +1,4 @@
-﻿using Salo.Live.Models;
-
-namespace Salo.Utility
+﻿namespace Salo.Utility
 {
     public static class NameGenerator
     {

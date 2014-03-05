@@ -2,10 +2,35 @@
 using System.ComponentModel;
 using Newtonsoft.Json;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     public class Fleet
     {
+        public Fleet(Fleet fleet)
+        {
+            this.CurrentStar = fleet.CurrentStar;
+            this.DestinationStar = fleet.DestinationStar;
+            this.DistanceToDestination = fleet.DistanceToDestination;
+            this.Id = fleet.Id;
+            this.InTransit = fleet.InTransit;
+            this.Name = fleet.Name;
+            this.OriginStar = fleet.OriginStar;
+            this.PlayerId = fleet.PlayerId;
+            this.Ships = fleet.Ships;
+            this.ToProcess = fleet.ToProcess;
+            this.l = fleet.l;
+            this.lx = fleet.lx;
+            this.ly = fleet.ly;
+            this.o = fleet.o;
+            this.ouid = fleet.ouid;
+            this.w = fleet.w;
+        }
+
+        public Fleet()
+        {
+            
+        }
+
         /// <summary>
         /// Optional, Unsure?
         /// </summary>
@@ -123,12 +148,11 @@ namespace Salo.Live.Models
         /*
          * Simulator Use Only
          */
-        [Browsable(false)]
-        public bool InTransit { get; set; }
-        public Star OriginStar { get; set; }
-        public Star DestinationStar { get; set; }
-        public double DistanceToDestination { get; set; }
-        public Star CurrentStar { get; set; }
-        public bool ToProcess { get; set; }
+        internal bool InTransit { get; set; }
+        internal Star OriginStar { get; set; }
+        internal Star DestinationStar { get; set; }
+        internal double DistanceToDestination { get; set; }
+        internal Star CurrentStar { get; set; }
+        internal bool ToProcess { get; set; }
     }
 }

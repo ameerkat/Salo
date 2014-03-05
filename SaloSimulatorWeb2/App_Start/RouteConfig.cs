@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace SaloSimulatorWeb2
+namespace Salo.SaloSimulatorWeb2
 {
     public class RouteConfig
     {

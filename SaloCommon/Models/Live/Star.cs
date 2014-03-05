@@ -1,10 +1,36 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     public class Star
     {
+        public Star(Star star)
+        {
+            this.Economy = star.Economy;
+            this.Id = star.Id;
+            this.Industry = star.Industry;
+            this.IsHomeStar = star.IsHomeStar;
+            this.IsStartingStar = star.IsStartingStar;
+            this.IsVisible = star.IsVisible;
+            this.Name = star.Name;
+            this.NaturalResources = star.NaturalResources;
+            this.PlayerId = star.PlayerId;
+            this.Science = star.Science;
+            this.Ships = star.Ships;
+            this.ShipsFractional = star.ShipsFractional;
+            this.TotalResources = star.TotalResources;
+            this.WarpGate = star.WarpGate;
+            this.X = star.X;
+            this.Y = star.Y;
+            this.c = star.c;
+        }
+
+        public Star()
+        {
+            
+        }
+
         public static class Upgrade
         {
             public const string WarpGate = "warpgate";
@@ -101,17 +127,8 @@ namespace Salo.Live.Models
          * Simulator Use Only
          */
 
-        /// <summary>
-        /// Used internally for tracking ship generation
-        /// </summary>
-        [Browsable(false)]
-        // [ScriptIgnore]
-        public double ShipsFractional { get; set; }
-
-        [Browsable(false)]
-        // [ScriptIgnore]
-        public bool IsHomeStar { get; set; }
-
-        public bool IsStartingStar { get; set; }
+        internal double ShipsFractional { get; set; }
+        internal bool IsHomeStar { get; set; }
+        internal bool IsStartingStar { get; set; }
     }
 }

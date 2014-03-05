@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SaloSimulatorWeb2.Models
+namespace Salo.SaloSimulatorWeb2.Models
 {
     public class ExternalLoginConfirmationViewModel
     {

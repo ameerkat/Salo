@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SaloMapGeneratorConsole
+namespace Salo.SaloMapGeneratorConsole
 {
     public partial class MapDisplay : Form
     {

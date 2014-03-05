@@ -1,6 +1,4 @@
-﻿using Salo.Live.Models;
-
-namespace Salo
+﻿namespace Salo
 {
     /// <summary>
     /// Stateful action handler, has methods to manage the state of the game

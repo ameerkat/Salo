@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-namespace Salo.Live.Models
+namespace Salo
 {
     public class Event
     {

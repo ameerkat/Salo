@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SimulatorCore.cs" />
-    <None Include="Configuration.ini">
+    <None Include="Configuration.Default.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Compile Include="ExtensionMethods.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     public class Configuration
     {
@@ -48,7 +48,7 @@ namespace Salo.Live.Models
             public const string DefenderBonusWeapons = "DefenderBonusWeapons"; // 1
             public const string DevelopmentCostEconomy = "DevelopmentCostEconomy"; // 2
             public const string DevelopmentCostIndustry = "DevelopmentCostIndustry"; // 2
-            public const string DevelopmentCostScience = "DevelopmentCostSceicne"; // 2
+            public const string DevelopmentCostScience = "DevelopmentCostScience"; // 2
             public const string BaseVisibilityRange = "BaseVisibilityRange"; // 0.75
             public const string ScanningResearchVisibilityBonus = "ScanningResearchVisibilityBonus"; // 0.1 (per level)
             public const string BaseFleetRange = "BaseFleetRange"; // 1
@@ -60,7 +60,7 @@ namespace Salo.Live.Models
              * Currently Unused
              */
 
-            public const string TickRate = "TrickRate"; // in ms, usually ignored
+            public const string TickRate = "TickRate"; // in ms, usually ignored
             public const string TradeCostPerLevel = "TradeCostPerLevel"; // 15
             public const string StartingCash = "StartingCash"; // 500
             public const string StartingShips = "StartingShips"; // 10 per planet
@@ -68,6 +68,8 @@ namespace Salo.Live.Models
             public const string HomeStarIndustry = "HomeStarIndustry"; // 5
             public const string HomeStarScience = "HomeStarScience"; // 1
             public const string StartingFleets = "StartingFleets"; // 2
+            public const string StartingStars = "StartingStars"; // 6
+            public const string StarsPerPlayer = "StarsPerPlayer"; // 20
         }
     }
 }

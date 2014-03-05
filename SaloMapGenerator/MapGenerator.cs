@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Salo.Live.Models;
 
-namespace SaloMapGenerator
+namespace Salo
 {
     public static class MapGenerator
     {

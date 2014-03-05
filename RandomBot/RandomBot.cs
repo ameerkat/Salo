@@ -1,7 +1,5 @@
 ﻿using Salo;
-using Salo.Live.Models;
 using System;
-using System.Linq;
 
 namespace RandomBot
 {

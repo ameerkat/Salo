@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartupAttribute(typeof(SaloSimulatorWeb2.Startup))]
-namespace SaloSimulatorWeb2
+[assembly: OwinStartupAttribute(typeof(Salo.SaloSimulatorWeb2.Startup))]
+namespace Salo.SaloSimulatorWeb2
 {
     public partial class Startup
     {

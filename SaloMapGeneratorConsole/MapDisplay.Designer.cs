@@ -1,4 +1,4 @@
-﻿namespace SaloMapGeneratorConsole
+﻿namespace Salo.SaloMapGeneratorConsole
 {
     partial class MapDisplay
     {

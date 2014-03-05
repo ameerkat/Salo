@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using Salo;
-using Salo.Live.Models;
 
-namespace SaloSimulator
+namespace Salo.SaloSimulator
 {
     public static class SimulatorCore
     {
@@ -20,6 +19,13 @@ namespace SaloSimulator
             var requiredStars = (double)(configuration.GetSettingAsDouble(Configuration.ConfigurationKeys.StarsForVictoryPercent) * state.Stars.Count);
             var playerStars = CalculateStarByPlayer(state, (x) => 1);
             return playerStars.Any(x => x.Value >= requiredStars);
+        }
+
+        public static Player GetWinner(State state, Configuration configuration)
+        {
+            var requiredStars = (double)(configuration.GetSettingAsDouble(Configuration.ConfigurationKeys.StarsForVictoryPercent) * state.Stars.Count);
+            var playerStars = CalculateStarByPlayer(state, (x) => 1);
+            return playerStars.Where(x => x.Value >= requiredStars).Select(x => x.Key).FirstOrDefault();
         }
 
         private static Dictionary<Player, int> InitializePlayerIntDict(State state)
@@ -73,7 +79,144 @@ namespace SaloSimulator
             return wentUpALevel;
         }
 
-        public static void ProcessTick(State state, Configuration configuration, IEnumerable<ISaloBot> bots)
+        private static Dictionary<string, Technology> DefaultTechnologyDictionary()
+        {
+            return new Dictionary<string, Technology>()
+            {
+                {Research.Banking, new Technology() {Level = 1}},
+                {Research.Experimentation, new Technology() {Level = 1}},
+                {Research.Manufacturing, new Technology() {Level = 1}},
+                {Research.Propulsion, new Technology() {Level = 1}},
+                {Research.Scanning, new Technology() {Level = 1}},
+                {Research.Terraforming, new Technology() {Level = 1}},
+                {Research.Weapons, new Technology() {Level = 1}},
+            };
+        }
+
+        private static string NewStarName(string seed)
+        {
+            return String.Format("Star {0}", seed);
+        }
+
+        public static State Initialize(Configuration configuration, IList<ISaloBot> bots, State map = null )
+        {
+            State game = new State();
+
+            game.Players = new Dictionary<int, Player>();
+            for (int i = 0; i < bots.Count(); ++i)
+            {
+                var player = new Player()
+                {
+                    Id = i,
+                    Technology = DefaultTechnologyDictionary(),
+                    Researching = Research.Weapons, // defaults to weapons
+                    ResearchingNext = Research.Weapons,
+                    Name = String.Format("Player {0}", i),
+                    Cash = configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StartingCash)
+                };
+                game.Players.Add(i, player);
+
+                var bot = bots[i];
+                BotName botName = (BotName)Attribute.GetCustomAttribute(bot.GetType(), typeof(BotName));
+                player.Name = String.Format("{0}(v{1}) #{2}", botName.Name, botName.Version, i);
+
+                
+            }
+
+            if (map == null)
+            {
+                map = MapGenerator.GenerateMap(
+                    bots.Count, 
+                    configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StartingStars), 
+                    configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StarsPerPlayer), 
+                    configuration);
+            }
+
+            // Initialize Stars
+            game.Stars = new Dictionary<int, Star>();
+            game.Fleets = new Dictionary<int, Fleet>();
+            foreach (var s in map.Stars)
+            {
+                var star = new Star(){
+                    Id = s.Key,
+                    PlayerId = s.Value.PlayerId,
+                    Name = NewStarName(s.Key.ToString()),
+                    X = s.Value.X,
+                    Y = s.Value.Y,
+                    Ships = s.Value.IsStartingStar ? configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StartingShips) : 0,
+                    Economy = s.Value.IsHomeStar ? configuration.GetSettingAsInt(Configuration.ConfigurationKeys.HomeStarEconomy) : 0,
+                    Industry = s.Value.IsHomeStar ? configuration.GetSettingAsInt(Configuration.ConfigurationKeys.HomeStarIndustry) : 0,
+                    Science = s.Value.IsHomeStar ? configuration.GetSettingAsInt(Configuration.ConfigurationKeys.HomeStarScience) : 0,
+                    NaturalResources = s.Value.NaturalResources,
+                    TotalResources = s.Value.TotalResources,
+                    WarpGate = 0
+                };
+                game.Stars.Add(star.Id, star);
+
+                // add a fleet to the homestar
+                if (s.Value.IsHomeStar && configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StartingFleets) > 0)
+                {
+                    var fleetId = game.GetNextId(typeof (Fleet));
+                    game.Fleets.Add(fleetId, new Fleet()
+                    {
+                        Id = fleetId,
+                        Name = star.Name + " 1",
+                        OriginStar = null,
+                        DestinationStar = null,
+                        CurrentStar = star,
+                        InTransit = false,
+                        DistanceToDestination = 0,
+                        Ships = 0,
+                        ToProcess = false,
+                        PlayerId = star.PlayerId
+                    });
+                }
+            }
+
+            // Initialize Fleets
+            foreach (var player in game.Players)
+            {
+                // add starting fleets
+                for (int i = 1; i < configuration.GetSettingAsInt(Configuration.ConfigurationKeys.StartingFleets); ++i)
+                {
+                    // get all unoccupied stars
+                    KeyValuePair<int, Player> player1 = player;
+                    var starCandidates = game.Stars.Where(x => x.Value.PlayerId == player1.Key && game.Fleets.All(y => y.Value.CurrentStar != x.Value));
+                    // if no more stars are available to put starting fleets on
+                    // note it is possible to have more than 1 fleet per star
+                    // this is just an easy way to avoid putting double fleets on the starting star
+                    if (!starCandidates.Any())
+                        break;
+
+                    var star = starCandidates.ToList().RandomElement();
+                    var fleetId = game.GetNextId(typeof(Fleet));
+                    game.Fleets.Add(fleetId, new Fleet()
+                    {
+                        Id = fleetId,
+                        Name = star.Value.Name + " 1",
+                        OriginStar = null,
+                        DestinationStar = null,
+                        CurrentStar = star.Value,
+                        InTransit = false,
+                        DistanceToDestination = 0,
+                        Ships = 0,
+                        ToProcess = false,
+                        PlayerId = star.Value.PlayerId
+                    });
+                }
+            }
+
+            // Initialize bots
+            for (int i = 0; i < bots.Count(); ++i)
+            {
+                var bot = bots[i];
+                bot.Initialize(game.Players[i], configuration, new ActionHandler(game, configuration, i));
+            }
+
+            return game;
+        }
+
+        public static void ProcessTick(State state, Configuration configuration, IList<ISaloBot> bots)
         {
             /*
              * Overall Approach
@@ -276,9 +419,10 @@ namespace SaloSimulator
             }
 
             // * Calculate any new moves
-            foreach (ISaloBot bot in bots)
+            for (int i = 0; i < bots.Count(); i++)
             {
-                bot.Run(state);
+                ISaloBot bot = bots[i];
+                bot.Run(state.ToReport(configuration, state.Players[i]));
             }
 
             // * Sleep until tick is complete

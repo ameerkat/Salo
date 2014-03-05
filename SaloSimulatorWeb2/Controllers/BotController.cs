@@ -12,9 +12,9 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Salo;
-using SaloSimulatorWeb2.Models;
+using Salo.SaloSimulatorWeb2.Models;
 
-namespace SaloSimulatorWeb2.Controllers
+namespace Salo.SaloSimulatorWeb2.Controllers
 {
     public class BotController : Controller
     {

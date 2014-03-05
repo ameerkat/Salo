@@ -1,8 +1,7 @@
-﻿using Salo.Live.Models;
-using System;
+﻿using System;
 using System.Linq;
 
-namespace SaloMapGeneratorConsole
+namespace Salo.SaloMapGeneratorConsole
 {
     class Program
     {
@@ -31,7 +30,7 @@ namespace SaloMapGeneratorConsole
             Configuration config = new Configuration();
             config.Settings.Add(Configuration.ConfigurationKeys.TerraformingResourceCoefficient, "5");
 
-            var map = SaloMapGenerator.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer, config);
+            var map = Salo.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer, config);
 
             Console.WriteLine("Generating Form Scale Factor...");
             // Uniform scale factor to form size
@@ -56,7 +55,7 @@ namespace SaloMapGeneratorConsole
                 display.DrawCircle(
                     x, 
                     y, 
-                    star.IsStartingStar ? colors[star.PlayerId] : System.Drawing.Color.Black, 
+                    star.PlayerId != -1 ? colors[star.PlayerId] : System.Drawing.Color.Black, 
                     (int)(MaxCircleSize * ((double)star.TotalResources / 45.0))
                 );
             }

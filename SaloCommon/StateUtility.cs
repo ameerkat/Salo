@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Salo.Live.Models;
 
 namespace Salo
 {
@@ -17,7 +16,7 @@ namespace Salo
             return CalculateEuclideanDistance(star1.X, star2.X, star1.Y, star2.Y);
         }
 
-        public static double DistanceTo(this Salo.Live.Models.Star origin, Salo.Live.Models.Star star)
+        public static double DistanceTo(this Star origin, Star star)
         {
             return CalculateEuclideanDistance(origin, star);
         }

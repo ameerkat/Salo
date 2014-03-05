@@ -2,19 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     /// <summary>
     /// Game State
     /// </summary>
     public class Report
     {
-        public Report(State state, Configuration configuration, Player player)
-        {
-            // have to calculate visibilty of stars
-            // have to merge configuration settings here
-        }
-
         /// <summary>
         /// Is the current player an administrator for the game
         /// </summary>

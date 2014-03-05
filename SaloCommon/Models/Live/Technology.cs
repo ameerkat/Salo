@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     public class Technology
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Newtonsoft.Json;
 
-namespace Salo.Live.Models
+namespace Salo
 {
     /// <summary>
     /// TODO Check this!

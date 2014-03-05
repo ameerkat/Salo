@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace SaloSimulatorWeb2.Models
+namespace Salo.SaloSimulatorWeb2.Models
 {
     /// <summary>
     /// Provides a logical grouping for a series of games

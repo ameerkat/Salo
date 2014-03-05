@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SaloSimulatorWeb2.Models
+namespace Salo.SaloSimulatorWeb2.Models
 {
     public class ActionLog
     {

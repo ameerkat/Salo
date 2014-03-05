@@ -1,6 +1,4 @@
-﻿using Salo.Live.Models;
-
-namespace Salo
+﻿namespace Salo
 {
     public interface ISaloBot
     {
