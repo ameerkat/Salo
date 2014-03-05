@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Salo.Live.Models;
 
 namespace SaloMapGenerator
 {
@@ -49,21 +50,22 @@ namespace SaloMapGenerator
             return resources == 0 ? 1 : resources;
         }
 
-        private static bool IsClustersOverlap(List<List<MapStar>> clusters, List<MapStar> cluster, double threshold)
+        private static bool IsClustersOverlap(List<List<Star>> clusters, List<Star> cluster, double threshold)
         {
-            var homeStar = cluster.Where(star => star.isHomeStar).First();
+            var homeStar = cluster.Where(star => star.IsHomeStar).First();
             foreach (var c in clusters)
             {
-                if (Salo.Utility.Geometry.CalculateClusterMeanDistance(c, homeStar.x, homeStar.y) < threshold)
+                if (Salo.Geometry.CalculateClusterMeanDistance(c, homeStar.X, homeStar.Y) < threshold)
                     return true;
             }
             return false;
         }
 
-        public static Map GenerateMap(
+        public static State GenerateMap(
             int players,
             int startingStars,
             int starsPerPlayer,
+            Configuration configuration,
             GalaxyType galaxyType = GalaxyType.RandomHex, 
             ResourcesLevel resources = ResourcesLevel.Standard,
             StartingDistance startingDistance = StartingDistance.Medium)
@@ -76,28 +78,27 @@ namespace SaloMapGenerator
              * Place the cluster x distance (based on starting distance) from center of other clusters at random 60 degree angle
              * (random 60 degree angle because of RandomHex galaxy type)
              */
-            int global_star_counter = 0;
-            Map map = new Map(){
-                stars = new List<MapStar>()
-            };
+            State state = new State();
 
-            var clusters = new List<List<MapStar>>();
+            var clusters = new List<List<Star>>();
 
             double previousClusterCenterX = 0.0;
             double previousClusterCenterY = 0.0;
 
             for (int i = 0; i < players; ++i)
             {
-                var Cluster = new List<MapStar>();
-                var HomeStar = new MapStar()
+                var Cluster = new List<Star>();
+                var HomeStar = new Star()
                 {
-                    id = global_star_counter++,
-                    x = startingScale / 2.0, // position at center
-                    y = startingScale / 2.0,
-                    isHomeStar = true,
-                    isStartingStar = true,
-                    player = i,
-                    resources = 50 // all home stars start at 50
+                    Id = state.GetNextId(typeof(Star)),
+                    X = startingScale / 2.0, // position at center
+                    Y = startingScale / 2.0,
+                    IsHomeStar = true,
+                    IsStartingStar = true,
+                    PlayerId = i,
+                    NaturalResources = 50, // all home stars start at 50,
+                    // all players start with level 1 terraforming, todo make this more dynamic
+                    TotalResources = configuration.GetSettingAsInt(Configuration.ConfigurationKeys.TerraformingResourceCoefficient) + 50
                 };
                 Cluster.Add(HomeStar);
 
@@ -109,18 +110,22 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = Salo.Utility.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < (maxStartingRange / 2) &&
                         clusterMeanDistance > (maxStartingRange));
-                    var Star = new MapStar()
+
+                    var resource = ResourceGenerator(resources);
+                    var Star = new Star()
                     {
-                        id = global_star_counter++,
-                        x = x,
-                        y = y,
-                        isHomeStar = false,
-                        isStartingStar = true,
-                        player = i,
-                        resources = ResourceGenerator(resources)
+                        Id = state.GetNextId(typeof(Star)),
+                        X = x,
+                        Y = y,
+                        IsHomeStar = false,
+                        IsStartingStar = true,
+                        PlayerId = i,
+                        NaturalResources = resource,
+                        // all players start with level 1 terraforming, todo make this more dynamic
+                        TotalResources = configuration.GetSettingAsInt(Configuration.ConfigurationKeys.TerraformingResourceCoefficient) + resource
                     };
                     Cluster.Add(Star);
                 }
@@ -133,17 +138,21 @@ namespace SaloMapGenerator
                     {
                         x = rnd.NextDouble() * startingScale;
                         y = rnd.NextDouble() * startingScale;
-                        clusterMeanDistance = Salo.Utility.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
+                        clusterMeanDistance = Salo.Geometry.CalculateClusterMeanDistance(Cluster, x, y);
                     } while (clusterMeanDistance < maxStartingRange);
-                    var Star = new MapStar()
+
+                    var resource = ResourceGenerator(resources);
+                    var Star = new Star()
                     {
-                        id = global_star_counter++,
-                        x = x,
-                        y = y,
-                        isHomeStar = false,
-                        isStartingStar = false,
-                        player = i,
-                        resources = ResourceGenerator(resources)
+                        Id = state.GetNextId(typeof(Star)),
+                        X = x,
+                        Y = y,
+                        IsHomeStar = false,
+                        IsStartingStar = false,
+                        PlayerId = i,
+                        NaturalResources = resource,
+                        // all players start with level 1 terraforming, todo make this more dynamic
+                        TotalResources = configuration.GetSettingAsInt(Configuration.ConfigurationKeys.TerraformingResourceCoefficient) + resource
                     };
                     Cluster.Add(Star);
                 }
@@ -153,8 +162,8 @@ namespace SaloMapGenerator
                 // put homestar in 0 degree position above origin
                 foreach (var star in Cluster)
                 {
-                    star.x -= startingScale / 2;
-                    star.y += startingDistances[startingDistance];
+                    star.X -= startingScale / 2;
+                    star.Y += startingDistances[startingDistance];
                 }
 
                 var repeat = false;
@@ -168,14 +177,14 @@ namespace SaloMapGenerator
                         throw new Exception();
                     }
 
-                    var rotationAngle = Salo.Utility.Geometry.DegreesToRadians(60 * angleToTry);
+                    var rotationAngle = Salo.Geometry.DegreesToRadians(60 * angleToTry);
                     
                     foreach (var star in Cluster)
                     {
-                        var newx = (star.x * Math.Cos(rotationAngle)) - (star.y * Math.Sin(rotationAngle));
-                        var newy = (star.x * Math.Sin(rotationAngle)) - (star.y * Math.Cos(rotationAngle));
-                        star.x = newx + previousClusterCenterX;
-                        star.y = newy + previousClusterCenterY;
+                        var newx = (star.X * Math.Cos(rotationAngle)) - (star.Y * Math.Sin(rotationAngle));
+                        var newy = (star.X * Math.Sin(rotationAngle)) - (star.Y * Math.Cos(rotationAngle));
+                        star.X = newx + previousClusterCenterX;
+                        star.Y = newy + previousClusterCenterY;
                     }
 
                     if (IsClustersOverlap(clusters, Cluster, startingDistances[startingDistance]))
@@ -183,8 +192,8 @@ namespace SaloMapGenerator
                         //undo
                         foreach (var star in Cluster)
                         {
-                            star.x -= previousClusterCenterX;
-                            star.y -= previousClusterCenterY;
+                            star.X -= previousClusterCenterX;
+                            star.Y -= previousClusterCenterY;
                         }
                         repeat = true;
                     }
@@ -194,25 +203,28 @@ namespace SaloMapGenerator
                     }
                 } while (repeat);
 
-                previousClusterCenterX = HomeStar.x;
-                previousClusterCenterY = HomeStar.y;
+                previousClusterCenterX = HomeStar.X;
+                previousClusterCenterY = HomeStar.Y;
                 
                 clusters.Add(Cluster);
-                map.stars.AddRange(Cluster);
+                foreach (var star in Cluster)
+                {
+                    state.Stars.Add(star.Id, star);
+                }
             }
 
             // make everything positive
-            double minX = map.stars.Min(star => star.x);
-            double minY = map.stars.Min(star => star.y);
-            foreach (var star in map.stars)
+            double minX = state.Stars.Values.Min(star => star.X);
+            double minY = state.Stars.Values.Min(star => star.Y);
+            foreach (var star in state.Stars.Values)
             {
                 if(minX < 0)
-                    star.x += Math.Abs(minX);
+                    star.X += Math.Abs(minX);
                 if(minY < 0)
-                    star.y += Math.Abs(minY);
+                    star.Y += Math.Abs(minY);
             }
 
-            return map;
+            return state;
         }
     }
 }

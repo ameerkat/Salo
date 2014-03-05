@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Salo.Live.Models;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SaloMapGeneratorConsole
 {
@@ -29,12 +27,16 @@ namespace SaloMapGeneratorConsole
             display.Show();
             Console.WriteLine("Generating Random Map...");
             Console.WriteLine("Settings\n\tPlayers: {0},\n\tStarting Stars: {1},\n\tStars Per Player: {2}", players, startingStars, starsPerPlayer);
-            var map = SaloMapGenerator.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer);
+
+            Configuration config = new Configuration();
+            config.Settings.Add(Configuration.ConfigurationKeys.TerraformingResourceCoefficient, "5");
+
+            var map = SaloMapGenerator.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer, config);
 
             Console.WriteLine("Generating Form Scale Factor...");
             // Uniform scale factor to form size
-            double MaxX = map.stars.Max(star => star.x);
-            double MaxY = map.stars.Max(star => star.y);
+            double MaxX = map.Stars.Values.Max(star => star.X);
+            double MaxY = map.Stars.Values.Max(star => star.Y);
             double scale = 1;
             if(MaxX > MaxY){
                 scale = Size / MaxX;
@@ -45,17 +47,17 @@ namespace SaloMapGeneratorConsole
             //display.DrawBackground();
 
             Console.WriteLine("Drawing Map Preview...");
-            foreach(var star in map.stars)
+            foreach(var star in map.Stars.Values)
             {
-                var x = (int)(star.x * scale);
-                var y =  (int)(star.y * scale);
+                var x = (int)(star.X * scale);
+                var y =  (int)(star.Y * scale);
                 Console.WriteLine("({0}, {1})", x, y);
                 
                 display.DrawCircle(
                     x, 
                     y, 
-                    star.isStartingStar ? colors[star.player] : System.Drawing.Color.Black, 
-                    (int)(MaxCircleSize * ((double)star.resources / 45.0))
+                    star.IsStartingStar ? colors[star.PlayerId] : System.Drawing.Color.Black, 
+                    (int)(MaxCircleSize * ((double)star.TotalResources / 45.0))
                 );
             }
 

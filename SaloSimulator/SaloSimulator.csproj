@@ -86,10 +86,6 @@
       <Project>{2cf5f56f-905b-4091-82d2-a6f3671bddde}</Project>
       <Name>RandomBot</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SaloSimulatorWeb\SaloSimulatorWeb.csproj">
-      <Project>{22cea8af-1ad7-4395-ae14-166f09f6d53b}</Project>
-      <Name>SaloSimulatorWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

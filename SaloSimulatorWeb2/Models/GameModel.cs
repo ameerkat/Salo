@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Salo.Live.Models;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Salo.Live.Models;
 
 namespace SaloSimulatorWeb2.Models
 {
@@ -11,7 +9,8 @@ namespace SaloSimulatorWeb2.Models
         public Configuration Configuration { get; set; }
         public List<BotModel> Players { get; set; }
         public ApplicationUser Creator { get; set; }
-        public Salo.Models.Game State { get; set; }
+        public State InitialState { get; set; }
+        public ActionLog Actions { get; set; }
         public DateTime Created { get; set; }
         public DateTime Finished { get; set; }
     }

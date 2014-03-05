@@ -107,5 +107,11 @@ namespace Salo.Live.Models
         [Browsable(false)]
         // [ScriptIgnore]
         public double ShipsFractional { get; set; }
+
+        [Browsable(false)]
+        // [ScriptIgnore]
+        public bool IsHomeStar { get; set; }
+
+        public bool IsStartingStar { get; set; }
     }
 }

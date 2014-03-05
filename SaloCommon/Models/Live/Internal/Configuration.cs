@@ -55,6 +55,19 @@ namespace Salo.Live.Models
             public const string PropulsionMultiplier = "PropulsionMultiplier"; // 0.15
             public const string FleetBaseCost = "FleetBaseCost"; // 25
             public const string TerraformingResourceCoefficient = "TerraformingResourceCoefficient"; // 5
+
+            /*
+             * Currently Unused
+             */
+
+            public const string TickRate = "TrickRate"; // in ms, usually ignored
+            public const string TradeCostPerLevel = "TradeCostPerLevel"; // 15
+            public const string StartingCash = "StartingCash"; // 500
+            public const string StartingShips = "StartingShips"; // 10 per planet
+            public const string HomeStarEconomy = "HomeStarEconomy"; // 5
+            public const string HomeStarIndustry = "HomeStarIndustry"; // 5
+            public const string HomeStarScience = "HomeStarScience"; // 1
+            public const string StartingFleets = "StartingFleets"; // 2
         }
     }
 }

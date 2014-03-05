@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Salo.Models;
 using IniParser;
 using IniParser.Model;
 using System.IO;
@@ -18,25 +17,7 @@ namespace Salo
 
         private const string GameParamsSection = "GameParams";
         private const string MapSection = "Map";
-
-        private static void LoadSettings(Game game, IniData data){
-            game.FleetSpeed = int.Parse(data[GameParamsSection]["FleetSpeed"]);
-            game.TickRate = int.Parse(data[GameParamsSection]["FleetSpeed"]);
-            game.ProductionRate = int.Parse(data[GameParamsSection]["ProductionRate"]);
-            game.TradeCost = int.Parse(data[GameParamsSection]["ProductionRate"]);
-            game.StarsForVictory = double.Parse(data[GameParamsSection]["StarsForVictory"]);
-            game.MoneyPerEconomy = int.Parse(data[GameParamsSection]["MoneyPerEconomy"]);
-            game.BaseTechRate = int.Parse(data[GameParamsSection]["BaseTechRate"]);
-            game.WarpGateModifier = int.Parse(data[GameParamsSection]["WarpGateModifier"]);
-            game.DefenderBonus = int.Parse(data[GameParamsSection]["DefenderBonus"]);
-            game.StartingCash = int.Parse(data[GameParamsSection]["StartingCash"]);
-            game.StartingShips = int.Parse(data[GameParamsSection]["StartingShips"]);
-            game.HomeStarEconomy = int.Parse(data[GameParamsSection]["HomeStarEconomy"]);
-            game.HomeStarIndustry = int.Parse(data[GameParamsSection]["HomeStarIndustry"]);
-            game.HomeStarScience = int.Parse(data[GameParamsSection]["HomeStarScience"]);
-            game.StartingFleets = int.Parse(data[GameParamsSection]["StartingFleets"]);
-        }
-
+        
         /// <summary>
         /// Returns null if no winner, returns Player if game is won
         /// </summary>
