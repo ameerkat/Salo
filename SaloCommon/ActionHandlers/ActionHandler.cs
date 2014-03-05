@@ -1,4 +1,5 @@
-﻿using Salo.Utility;
+﻿using System.Collections.Generic;
+using Salo.Utility;
 using System;
 using System.Linq;
 
@@ -9,21 +10,28 @@ namespace Salo
         protected State _state;
         protected Configuration _configuration;
         protected StateUtility _stateUtility;
+        protected IActionLogger _actionLogger;
         protected readonly int PlayerId;
         public State State { get { return _state; } }
         public Configuration Configuration { get { return _configuration; } }
         public Player Player { get { return State.Players[PlayerId]; } }
+
+        public IActionLogger ActionLogger
+        {
+            get { return _actionLogger; }
+        }
 
         public StateUtility StateUtility
         {
             get { return _stateUtility; }
         }
 
-        public ActionHandler(State state, Configuration configuration, int playerId)
+        public ActionHandler(State state, Configuration configuration, int playerId, IActionLogger actionLogger)
         {
             _state = state;
             _configuration = configuration;
             PlayerId = playerId;
+            _actionLogger = actionLogger;
         }
 
         public void UpdateState(State state)
@@ -34,6 +42,18 @@ namespace Salo
 
         public void Upgrade(int starId, string upgrade)
         {
+            this.ActionLogger.LogAction(new Action()
+            {
+                Name = "Upgrade",
+                Time = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - State.StartTime,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "playerId", Player.Id.ToString() },
+                    { "starId", starId.ToString() },
+                    { "upgrade", upgrade }
+                }
+            });
+
             var star = State.Stars[starId];
             if (this.PlayerId != star.PlayerId)
             {
@@ -71,6 +91,17 @@ namespace Salo
 
         public void BuildFleet(int starId)
         {
+            this.ActionLogger.LogAction(new Action()
+            {
+                Name = "BuildFleet",
+                Time = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - State.StartTime,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "playerId", Player.Id.ToString() },
+                    { "starId", starId.ToString() }
+                }
+            });
+
             var star = State.Stars[starId];
             var fleetCost = Configuration.GetSettingAsInt(Configuration.ConfigurationKeys.FleetBaseCost);
             if (State.Player(star).Cash >= fleetCost)
@@ -95,6 +126,19 @@ namespace Salo
 
         public void Move(int originStarId, int destinationStarId, int ships)
         {
+            this.ActionLogger.LogAction(new Action()
+            {
+                Name = "Move",
+                Time = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - State.StartTime,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "playerId", Player.Id.ToString() },
+                    { "originStarId", originStarId.ToString() },
+                    { "destinationStarId", destinationStarId.ToString() },
+                    { "ships", ships.ToString() },
+                }
+            });
+
             var originStar = State.Stars[originStarId];
             var destinationStar = State.Stars[destinationStarId];
             var useFleet = State.Fleets.Values.FirstOrDefault(x => x.CurrentStar != null && x.CurrentStar == originStar);
@@ -124,11 +168,33 @@ namespace Salo
 
         public void SetCurrentResearch(string research)
         {
+            this.ActionLogger.LogAction(new Action()
+            {
+                Name = "SetCurrentResearch",
+                Time = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - State.StartTime,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "playerId", Player.Id.ToString() },
+                    { "research", research }
+                }
+            });
+
             Player.Researching = research;
         }
 
         public void SetNextResearch(string research)
         {
+            this.ActionLogger.LogAction(new Action()
+            {
+                Name = "SetNextResearch",
+                Time = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds - State.StartTime,
+                Parameters = new Dictionary<string, string>()
+                {
+                    { "playerId", Player.Id.ToString() },
+                    { "research", research }
+                }
+            });
+
             Player.ResearchingNext = research;
         }
     }

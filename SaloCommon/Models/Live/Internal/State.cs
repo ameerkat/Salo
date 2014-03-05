@@ -31,6 +31,7 @@ namespace Salo
         public bool IsOver { get; set; }
         public bool IsStarted { get; set; }
         public int CurrentTick { get; set; }
+        internal long StartTime { get; set; }
 
         private Dictionary<Player, int> InitializePlayerIntDict()
         {

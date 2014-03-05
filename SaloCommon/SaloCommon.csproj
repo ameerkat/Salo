@@ -49,11 +49,14 @@
     <Compile Include="ActionHandlers\ActionHandler.cs" />
     <Compile Include="ActionHandlers\IActionHandler.cs" />
     <Compile Include="ActionHandlers\IStatefulActionHandler.cs" />
+    <Compile Include="ActionLoggers\ActionLogger.cs" />
+    <Compile Include="ActionLoggers\IActionLogger.cs" />
     <Compile Include="Attributes\BotDescription.cs" />
     <Compile Include="Attributes\BotName.cs" />
     <Compile Include="Attributes\BotParameter.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="InternalVisibleTo.cs" />
+    <Compile Include="Models\Live\Internal\Action.cs" />
     <Compile Include="Models\Live\Internal\Configuration.cs" />
     <Compile Include="Models\Live\Internal\State.cs" />
     <Compile Include="StateUtility.cs" />

@@ -34,7 +34,8 @@ namespace Salo.SaloSimulator
                 bots.Add(bot);
             }
 
-            var game = SimulatorCore.Initialize(configuration, bots);
+            IActionLogger actionLogger = new ActionLogger();
+            var game = SimulatorCore.Initialize(configuration, bots, actionLogger);
             while (!game.IsOver)
             {
                 SimulatorCore.ProcessTick(game, configuration, bots);

@@ -98,9 +98,10 @@ namespace Salo.SaloSimulator
             return String.Format("Star {0}", seed);
         }
 
-        public static State Initialize(Configuration configuration, IList<ISaloBot> bots, State map = null )
+        public static State Initialize(Configuration configuration, IList<ISaloBot> bots, IActionLogger logger, State map = null )
         {
             State game = new State();
+            game.StartTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds;
 
             game.Players = new Dictionary<int, Player>();
             for (int i = 0; i < bots.Count(); ++i)
@@ -210,7 +211,7 @@ namespace Salo.SaloSimulator
             for (int i = 0; i < bots.Count(); ++i)
             {
                 var bot = bots[i];
-                bot.Initialize(game.Players[i], configuration, new ActionHandler(game, configuration, i));
+                bot.Initialize(game.Players[i], configuration, new ActionHandler(game, configuration, i, logger));
             }
 
             return game;
