@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Salo.SaloSimulatorWeb2.Models
 {
-    public class BotModel
+    public class Bot
     {
         [Key]
         public int Id { get; set; }

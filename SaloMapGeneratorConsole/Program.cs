@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Salo.SaloMapGeneratorConsole
@@ -28,7 +29,7 @@ namespace Salo.SaloMapGeneratorConsole
             Console.WriteLine("Settings\n\tPlayers: {0},\n\tStarting Stars: {1},\n\tStars Per Player: {2}", players, startingStars, starsPerPlayer);
 
             Configuration config = new Configuration();
-            config.Settings.Add(Configuration.ConfigurationKeys.TerraformingResourceCoefficient, "5");
+            config.Settings.Add(new cStringStringKeyValuePair(Configuration.ConfigurationKeys.TerraformingResourceCoefficient, "5"));
 
             var map = Salo.MapGenerator.GenerateMap(players, startingStars, starsPerPlayer, config);
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Salo
 {
@@ -7,18 +9,20 @@ namespace Salo
     {
         public Configuration()
         {
-            Settings = new Dictionary<string, string>();
+            Settings = new List<cStringStringKeyValuePair>();
         }
 
+        [Key]
+        public string Name { get; set; }
         public Configuration Parent { get; set; }
-        public Dictionary<string, string> Settings { get; set; }
+        public List<cStringStringKeyValuePair> Settings { get; set; }
 
         public string GetSetting(string key)
         {
-            string setting;
-            if (Settings.TryGetValue(key, out setting))
+            cStringStringKeyValuePair setting = Settings.FirstOrDefault(x => x.Key == key);
+            if (setting != null)
             {
-                return setting;
+                return setting.Value;
             }
             else if (Parent != null)
             {

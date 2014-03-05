@@ -53,7 +53,7 @@ namespace Salo.SaloSimulatorWeb2.Controllers
                         var interfaces = type.GetInterfaces();
                         if (interfaces.Any(x => x == typeof (ISaloBot)))
                         {
-                            var bot = new BotModel();
+                            var bot = new Bot();
                             bot.Created = DateTime.UtcNow;
                             var attributes = type.GetCustomAttributes(true);
                             var botName = (BotName) attributes.FirstOrDefault(a => a is BotName);
@@ -127,7 +127,7 @@ namespace Salo.SaloSimulatorWeb2.Controllers
         // GET: /Bot/
         public ActionResult Index()
         {
-            List<BotModel> bots;
+            List<Bot> bots;
             using (var botContext = new ApplicationDbContext())
             {
                 bots = botContext.Bots.Include(x => x.Uploader).ToList();

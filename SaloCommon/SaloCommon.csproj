@@ -32,10 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser">
+      <HintPath>..\packages\ini-parser.2.0.2\lib\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -54,9 +58,11 @@
     <Compile Include="Attributes\BotDescription.cs" />
     <Compile Include="Attributes\BotName.cs" />
     <Compile Include="Attributes\BotParameter.cs" />
+    <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="InternalVisibleTo.cs" />
     <Compile Include="Models\Live\Internal\Action.cs" />
+    <Compile Include="Models\Live\Internal\cStringStringKeyValuePair.cs" />
     <Compile Include="Models\Live\Internal\Configuration.cs" />
     <Compile Include="Models\Live\Internal\State.cs" />
     <Compile Include="StateUtility.cs" />

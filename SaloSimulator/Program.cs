@@ -7,26 +7,10 @@ namespace Salo.SaloSimulator
 {
     class Program
     {
-        private static Configuration LoadConfigurationFromIni(string iniPath)
-        {
-            FileIniDataParser parser = new FileIniDataParser();
-            IniData data = parser.ReadFile("Configuration.Default.ini");
-            Configuration configuration = new Configuration();
-            configuration.Settings = new Dictionary<string, string>();
-            foreach (var section in data.Sections)
-            {
-                foreach (var key in section.Keys)
-                {
-                    configuration.Settings.Add(key.KeyName, key.Value);
-                }
-            }
-            return configuration;
-        }
-
         static void Main(string[] args)
         {
             const int players = 3;
-            var configuration = LoadConfigurationFromIni("Configuration.Default.ini");
+            var configuration = ConfigurationHelper.LoadConfigurationFromIni("Configuration.Default.ini");
 
             var bots = new List<ISaloBot>();
             for(int i = 0; i < players; ++i)

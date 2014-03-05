@@ -15,6 +15,8 @@ namespace Salo.SaloSimulatorWeb2.Models
         {
         }
 
-        public DbSet<BotModel> Bots { get; set; }
+        public DbSet<Bot> Bots { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Configuration> Configurations { get; set; }
     }
 }
