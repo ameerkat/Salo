@@ -6,6 +6,9 @@
 
 <h2>Create</h2>
 
+<script>
+    var BotJs = @Html.Raw(ViewBag.BotJs);
+</script>
 
 @using (Html.BeginForm()) 
 {
@@ -17,27 +20,27 @@
         @Html.ValidationSummary(true)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ActionFilePath, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Configuration, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ActionFilePath)
-                @Html.ValidationMessageFor(model => model.ActionFilePath)
+                @Html.DropDownList("ConfigurationTemplate")
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Created, new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Players, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Created)
-                @Html.ValidationMessageFor(model => model.Created)
-            </div>
+                <span id="bot-list"></span>
+                <input type="button" onclick="addbot()" value="Add Bot" /><br />
+            </div><br />
+            
         </div>
-
+        
         <div class="form-group">
-            @Html.LabelFor(model => model.Finished, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Finished)
-                @Html.ValidationMessageFor(model => model.Finished)
+            <label for="iterations" class="control-label col-md-2">Iterations</label>
+            <div class="col-md-10" id="iterations-input-wrapper">
+                <input type="text" id ="iterations" name="iterations" />
             </div>
+
         </div>
 
         <div class="form-group">

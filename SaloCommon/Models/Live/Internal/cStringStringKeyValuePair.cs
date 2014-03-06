@@ -10,6 +10,10 @@ namespace Salo
         public String Key { get; set; }
         public String Value { get; set; }
 
+        public cStringStringKeyValuePair()
+        {
+        }
+
         public cStringStringKeyValuePair(String Key, String Value)
         {
             this.Key = Key;

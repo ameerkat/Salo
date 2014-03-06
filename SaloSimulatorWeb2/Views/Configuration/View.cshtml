@@ -1,0 +1,31 @@
+﻿@model Salo.Configuration
+
+@{
+    ViewBag.Title = "View";
+}
+
+<div>
+    <h2>@Model.Name <span style="color: #ccc"> :: @Html.ActionLink(Model.Parent == null ? "null" : Model.Parent.Name, "View", "Configuration")</span></h2>
+    <hr />
+    <table class="configuration-table">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+        @foreach (var kvp in Model.Settings)
+        {
+            <tr>
+                <td>@kvp.Key</td>
+                <td>@kvp.Value</td>
+                <td><a href="https://github.com/ameerkat/Salo/search?q=ConfigurationKeys.@kvp.Key">Find Usages</a></td>
+            </tr>
+        }
+    </table>
+    <dl class="dl-horizontal">
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Name }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

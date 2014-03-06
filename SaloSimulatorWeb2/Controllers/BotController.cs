@@ -115,7 +115,7 @@ namespace Salo.SaloSimulatorWeb2.Controllers
                         }
                     }
                 }
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
 
             ViewBag.Message = "No file attached...";
